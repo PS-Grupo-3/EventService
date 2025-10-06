@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\EventStatus\Commands\" />
+    <Folder Include="Features\EventStatus\Queries\" />
+    <Folder Include="Features\Event\Commands\" />
+    <Folder Include="Features\Event\Queries\" />
+    <Folder Include="Interfaces\Command\" />
+    <Folder Include="Interfaces\Query\" />
+    <Folder Include="Models\" />
+    <Folder Include="Response\" />
+  </ItemGroup>
+
+</Project>

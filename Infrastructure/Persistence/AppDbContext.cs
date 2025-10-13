@@ -11,6 +11,7 @@ namespace Infrastructure.Persistence
 
         public DbSet<Event> Events {  get; set; }
         public DbSet<EventStatus> EventStatuses { get; set; }
+        public DbSet<EventCategory> EventCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

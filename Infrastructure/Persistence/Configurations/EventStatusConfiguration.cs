@@ -13,6 +13,14 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(s => s.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasData(
+                new EventStatus { StatusId = 1, Name = "Borrador" },
+                new EventStatus { StatusId = 2, Name = "Publicado" },
+                new EventStatus { StatusId = 3, Name = "Pospuesto" },
+                new EventStatus { StatusId = 4, Name = "Cancelado" },
+                new EventStatus { StatusId = 5, Name = "Finalizado" }
+            );
         }
     }
 }

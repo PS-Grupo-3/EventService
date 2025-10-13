@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251013203338_DER-Update")]
+    partial class DERUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,18 +112,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("EventCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryId = 1,
-                            Name = "Concierto"
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            Name = "Festival"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.EventStatus", b =>
@@ -139,33 +130,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("StatusId");
 
                     b.ToTable("EventStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            StatusId = 1,
-                            Name = "Borrador"
-                        },
-                        new
-                        {
-                            StatusId = 2,
-                            Name = "Publicado"
-                        },
-                        new
-                        {
-                            StatusId = 3,
-                            Name = "Pospuesto"
-                        },
-                        new
-                        {
-                            StatusId = 4,
-                            Name = "Cancelado"
-                        },
-                        new
-                        {
-                            StatusId = 5,
-                            Name = "Finalizado"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Event", b =>

@@ -4,12 +4,12 @@ namespace EventService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class EventController : ControllerBase
+    public class EventCategoryController : ControllerBase
     {
         [HttpGet("test")]
         public IActionResult GetTest()
         {
-            return Ok(new { Message = "Event endpoint is working!" });
+            return Ok(new { Message = "Category endpoint is working!" });
         }
     }
 }

@@ -9,7 +9,7 @@ namespace EventService.API.Controllers
         [HttpGet("test")]
         public IActionResult GetTest()
         {
-            return Ok(new { Message = "Event API is working!" });
+            return Ok(new { Message = "Status endpoint is working!" });
         }
     }
 }

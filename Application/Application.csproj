@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\EventCategories\Commands\" />
+    <Folder Include="Features\EventCategories\Queries\" />
     <Folder Include="Features\EventStatus\Commands\" />
     <Folder Include="Features\EventStatus\Queries\" />
     <Folder Include="Features\Event\Commands\" />

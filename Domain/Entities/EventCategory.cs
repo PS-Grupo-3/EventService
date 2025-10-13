@@ -1,8 +1,8 @@
 ﻿namespace Domain.Entities
 {
-    public class EventStatus
+    public class EventCategory
     {
-        public int StatusId { get; set; }
+        public int CategoryId { get; set; }
         public string Name { get; set; } = null!;
 
         public ICollection<Event> Events { get; set; } = new List<Event>();

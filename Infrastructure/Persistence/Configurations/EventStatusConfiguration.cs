@@ -8,6 +8,7 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<EventStatus> builder)
         {
+            builder.ToTable("EventStatus");
             builder.HasKey(s => s.StatusId);
 
             builder.Property(s => s.Name)
@@ -15,11 +16,10 @@ namespace Infrastructure.Persistence.Configurations
                 .HasMaxLength(100);
 
             builder.HasData(
-                new EventStatus { StatusId = 1, Name = "Borrador" },
-                new EventStatus { StatusId = 2, Name = "Publicado" },
-                new EventStatus { StatusId = 3, Name = "Pospuesto" },
-                new EventStatus { StatusId = 4, Name = "Cancelado" },
-                new EventStatus { StatusId = 5, Name = "Finalizado" }
+                new EventStatus { StatusId = 1, Name = "Scheduled" },
+                new EventStatus { StatusId = 2, Name = "Active" },
+                new EventStatus { StatusId = 3, Name = "Postponed" },
+                new EventStatus { StatusId = 4, Name = "Finished" }                
             );
         }
     }

@@ -7,20 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\EventCategories\Commands\" />
-    <Folder Include="Features\EventCategories\Queries\" />
-    <Folder Include="Features\EventStatus\Commands\" />
-    <Folder Include="Features\EventStatus\Queries\" />
-    <Folder Include="Features\Event\Commands\" />
-    <Folder Include="Features\Event\Queries\" />
-    <Folder Include="Interfaces\Command\" />
-    <Folder Include="Interfaces\Query\" />
-    <Folder Include="Models\" />
-    <Folder Include="Response\" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>

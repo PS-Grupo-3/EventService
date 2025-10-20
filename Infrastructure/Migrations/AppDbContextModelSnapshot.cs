@@ -42,30 +42,29 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("MapUrl")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("ThemeColor")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("#FFFFFF");
 
                     b.Property<string>("ThumbnailUrl")
                         .IsRequired()
@@ -76,7 +75,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -88,9 +89,13 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("StatusId");
 
-                    b.ToTable("Events");
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VenueId");
+
+                    b.ToTable("Event", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.EventCategory", b =>
@@ -108,19 +113,80 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("EventCategories");
+                    b.ToTable("EventCategory", (string)null);
 
                     b.HasData(
                         new
                         {
                             CategoryId = 1,
-                            Name = "Concierto"
+                            Name = "Rock"
                         },
                         new
                         {
                             CategoryId = 2,
-                            Name = "Festival"
+                            Name = "Pop"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            Name = "Trap"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            Name = "Reggaeton"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            Name = "Electronic"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            Name = "Metal"
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            Name = "Cumbia"
+                        },
+                        new
+                        {
+                            CategoryId = 8,
+                            Name = "Hip-Hop"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSector", b =>
+                {
+                    b.Property<Guid>("EventSectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Available")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid>("SectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("EventSectorId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("SectorId");
+
+                    b.ToTable("EventSector", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.EventStatus", b =>
@@ -138,53 +204,64 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("EventStatuses");
+                    b.ToTable("EventStatus", (string)null);
 
                     b.HasData(
                         new
                         {
                             StatusId = 1,
-                            Name = "Borrador"
+                            Name = "Scheduled"
                         },
                         new
                         {
                             StatusId = 2,
-                            Name = "Publicado"
+                            Name = "Active"
                         },
                         new
                         {
                             StatusId = 3,
-                            Name = "Pospuesto"
+                            Name = "Postponed"
                         },
                         new
                         {
                             StatusId = 4,
-                            Name = "Cancelado"
-                        },
-                        new
-                        {
-                            StatusId = 5,
-                            Name = "Finalizado"
+                            Name = "Finished"
                         });
                 });
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
-                    b.HasOne("Domain.Entities.EventCategory", "EventCategory")
+                    b.HasOne("Domain.Entities.EventCategory", "Category")
                         .WithMany("Events")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.EventStatus", "EventStatus")
+                    b.HasOne("Domain.Entities.EventStatus", "Status")
                         .WithMany("Events")
-                        .HasForeignKey("Status")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("EventCategory");
+                    b.Navigation("Category");
 
-                    b.Navigation("EventStatus");
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSector", b =>
+                {
+                    b.HasOne("Domain.Entities.Event", "Event")
+                        .WithMany("EventSectors")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Event", b =>
+                {
+                    b.Navigation("EventSectors");
                 });
 
             modelBuilder.Entity("Domain.Entities.EventCategory", b =>

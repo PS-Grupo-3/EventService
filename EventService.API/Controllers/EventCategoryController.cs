@@ -1,15 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Features.EventCategories.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
-namespace EventService.API.Controllers
+namespace Api.Controllers;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+public class EventCategoryController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class EventCategoryController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public EventCategoryController(IMediator mediator)
     {
-        [HttpGet("test")]
-        public IActionResult GetTest()
-        {
-            return Ok(new { Message = "Category endpoint is working!" });
-        }
+        _mediator = mediator;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _mediator.Send(new GetAllEventCategoriesQuery());
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _mediator.Send(new GetEventCategoryByIdQuery(id));
+        return Ok(result);
     }
 }

@@ -1,4 +1,8 @@
-﻿using Infrastructure.Persistence;
+﻿using Application.Interfaces.Command;
+using Application.Interfaces.Query;
+using Infrastructure.Commands;
+using Infrastructure.Persistence;
+using Infrastructure.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventService.API.DependencyInjection
@@ -13,6 +17,12 @@ namespace EventService.API.DependencyInjection
                 options.UseSqlServer(connectionString));
 
             // Commands & Queries
+            services.AddScoped<IEventCommand, EventCommand>();
+            services.AddScoped<IEventSectorCommand, EventSectorCommand>();
+            services.AddScoped<IEventCategoryQuery, EventCategoryQuery>();
+            services.AddScoped<IEventQuery, EventQuery>();
+            services.AddScoped<IEventSectorQuery, EventSectorQuery>();
+            services.AddScoped<IEventStatusQuery, EventStatusQuery>();            
 
             return services;
         }

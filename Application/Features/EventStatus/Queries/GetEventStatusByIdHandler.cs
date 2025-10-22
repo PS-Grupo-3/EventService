@@ -22,7 +22,7 @@ public class GetEventStatusByIdHandler : IRequestHandler<GetEventStatusByIdQuery
 
         return new EventStatusResponse
         {
-            StatusId = request.StatusId,
+            StatusId = status.StatusId,
             Name = status.Name
         };
     }

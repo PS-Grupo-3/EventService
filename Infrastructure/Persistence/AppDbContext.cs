@@ -8,7 +8,6 @@ namespace Infrastructure.Persistence
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-
         public DbSet<Event> Events {  get; set; }
         public DbSet<EventStatus> EventStatuses { get; set; }
         public DbSet<EventCategory> EventCategories { get; set; }

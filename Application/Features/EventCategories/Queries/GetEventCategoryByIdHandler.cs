@@ -1,13 +1,28 @@
-﻿using Application.Models.Responses;
+﻿using Application.Interfaces.Query;
+using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.EventCategories.Queries;
 
 public class GetEventCategoryByIdHandler : IRequestHandler<GetEventCategoryByIdQuery, EventCategoryResponse>
 {
-    public Task<EventCategoryResponse> Handle(GetEventCategoryByIdQuery request, CancellationToken cancellationToken)
+    private readonly IEventCategoryQuery _eventCategoryQuery;
+
+    public GetEventCategoryByIdHandler(IEventCategoryQuery eventCategoryQuery)
     {
-        // TODO: Implementar
-        throw new NotImplementedException();
+        _eventCategoryQuery = eventCategoryQuery;
+    }
+    public async Task<EventCategoryResponse> Handle(GetEventCategoryByIdQuery request, CancellationToken cancellationToken)
+    {
+        var category = await _eventCategoryQuery.GetByIdAsync(request.CategoryId, cancellationToken);
+
+        if (category is null)
+            throw new ArgumentNullException($"No se encontró la categoria con el ID {request.CategoryId}");
+
+        return new EventCategoryResponse
+        {
+            CategoryId = category.CategoryId,
+            Name = category.Name
+        };
     }
 }

@@ -17,11 +17,12 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for managing Events and EventStatuses using Clean Architecture and CQRS.",
         Contact = new OpenApiContact
         {
-            Name = "Event Service Team",
-            Email = "support@eventservice.local"
+            Name = "Ticketech Team",
+            Email = "support@TicketechTeam.local"
         }
     });
 });
+
 
 // Base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -32,6 +33,9 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+// Middleware personalizado para agarrar Exceptions
+app.UseMiddleware<EventService.API.Middlewares.ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

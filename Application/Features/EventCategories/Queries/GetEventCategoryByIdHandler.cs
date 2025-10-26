@@ -3,7 +3,6 @@ using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.EventCategories.Queries;
-
 public class GetEventCategoryByIdHandler : IRequestHandler<GetEventCategoryByIdQuery, EventCategoryResponse>
 {
     private readonly IEventCategoryQuery _eventCategoryQuery;

@@ -3,4 +3,5 @@ using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.EventSector.Commands;
-public record DeleteEventSectorCommand(DeleteEventSectorRequest Request) : IRequest<GenericResponse>;
+public record UpdateEventSectorCommand(UpdateEventSectorRequest Request) : IRequest<GenericResponse>;
+

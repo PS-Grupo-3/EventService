@@ -31,4 +31,24 @@ public class EventQuery : IEventQuery
             .Include(e => e.EventSectors)
             .FirstOrDefaultAsync(e => e.EventId == eventId, cancellationToken);
     }
+
+    public async Task<IEnumerable<Event>> GetFilteredAsync(Guid? eventId = null, int? categoryId = null, int? statusId = null, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Events
+            .Include(e => e.Category)
+            .Include(e => e.Status)
+            .Include(e => e.EventSectors)
+            .AsQueryable();
+
+        if (eventId.HasValue)
+            query = query.Where(e => e.EventId == eventId.Value);
+
+        if (categoryId.HasValue)
+            query = query.Where(e => e.CategoryId == categoryId.Value);
+
+        if (statusId.HasValue)
+            query = query.Where(e => e.StatusId == statusId.Value);
+
+        return await query.ToListAsync(cancellationToken);
+    }
 }

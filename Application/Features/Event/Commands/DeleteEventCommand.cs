@@ -2,7 +2,5 @@
 using Application.Models.Responses;
 using MediatR;
 
-namespace Application.Features.Event.Commands
-{
-    public record DeleteEventCommand(DeleteEventRequest Request) : IRequest<GenericResponse>;
-}
+namespace Application.Features.Event.Commands;
+public record DeleteEventCommand(DeleteEventRequest Request) : IRequest<GenericResponse>;

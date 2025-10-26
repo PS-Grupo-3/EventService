@@ -2,4 +2,5 @@
 using MediatR;
 
 namespace Application.Features.Event.Queries;
-public record GetEventByIdQuery(Guid EventId) : IRequest<EventDetailResponse?>;
+public record GetEventSectorsQuery(Guid EventId) : IRequest<IEnumerable<EventSectorResponse>>;
+

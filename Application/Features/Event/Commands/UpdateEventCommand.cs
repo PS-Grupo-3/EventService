@@ -2,7 +2,5 @@
 using Application.Models.Responses;
 using MediatR;
 
-namespace Application.Features.Event.Commands
-{
-    public record UpdateEventCommand(UpdateEventRequest Request) : IRequest<GenericResponse>;
-}
+namespace Application.Features.Event.Commands;
+public record UpdateEventCommand(UpdateEventRequest Request) : IRequest<GenericResponse>;

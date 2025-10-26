@@ -17,13 +17,6 @@ public class EventSectorController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("by-event/{eventId:guid}")]
-    public async Task<IActionResult> GetByEventId(Guid eventId)
-    {
-        var result = await _mediator.Send(new GetSectorsByEventIdQuery(eventId));
-        return Ok(result);
-    }
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -37,6 +30,21 @@ public class EventSectorController : ControllerBase
         var result = await _mediator.Send(new CreateEventSectorCommand(request));
         return Ok(result);
     }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)
+    {
+        var result = await _mediator.Send(new UpdateEventSectorCommand(request));
+        return Ok(result);
+    }
+
+    [HttpPatch("/api/v1/EventSector/{id:guid}/availability")]
+    public async Task<IActionResult> UpdateAvailability(Guid id, [FromBody] bool available)
+    {
+        var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available));
+        return Ok(response);
+    }
+
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)

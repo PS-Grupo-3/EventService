@@ -3,7 +3,6 @@ using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.EventStatus.Queries;
-
 public class GetEventStatusByIdHandler : IRequestHandler<GetEventStatusByIdQuery, EventStatusResponse>
 {
     private readonly IEventStatusQuery _eventStatusQuery;

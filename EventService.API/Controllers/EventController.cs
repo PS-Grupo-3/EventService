@@ -18,24 +18,35 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> Get([FromQuery] int? categoryId, [FromQuery] int? statusId)
     {
-        var result = await _mediator.Send(new GetAllEventsQuery());
-        return Ok(result);
-    }
+        var events = await _mediator.Send(
+            new GetFilteredEventsQuery(categoryId, statusId)
+        );
 
+        return Ok(events);
+    }
+   
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _mediator.Send(new GetEventByIdQuery(id));
-        return Ok(result);
+        var evt = await _mediator.Send(new GetEventByIdQuery(id));
+        return evt is null ? NotFound() : Ok(evt);
     }
+
+    [HttpGet("{id:guid}/sectors")]
+    public async Task<IActionResult> GetSectors(Guid id)
+    {
+        var response = await _mediator.Send(new GetEventSectorsQuery(id));
+        return Ok(response);
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
         var result = await _mediator.Send(new CreateEventCommand(request));
-        return CreatedAtAction(nameof(GetById), new { id = result.EventId }, result);
+        return CreatedAtAction(nameof(Get), new { id = result.EventId }, result);
     }
 
     [HttpPut]
@@ -44,6 +55,14 @@ public class EventController : ControllerBase
         var result = await _mediator.Send(new UpdateEventCommand(request));
         return Ok(result);
     }
+
+    [HttpPatch("{id:guid}/status/{statusId:int}")]
+    public async Task<IActionResult> UpdateStatus(Guid id, int statusId)
+    {
+        var response = await _mediator.Send(new UpdateEventStatusCommand(id, statusId));
+        return Ok(response);
+    }
+
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)

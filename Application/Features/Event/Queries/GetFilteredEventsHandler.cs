@@ -3,17 +3,18 @@ using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.Event.Queries;
-public class GetAllEventsHandler : IRequestHandler<GetAllEventsQuery, List<EventResponse>>
+public class GetFilteredEventsHandler : IRequestHandler<GetFilteredEventsQuery, List<EventResponse>>
 {
     private readonly IEventQuery _eventQuery;
-
-    public GetAllEventsHandler(IEventQuery eventQuery)
+    public GetFilteredEventsHandler(IEventQuery eventQuery)
     {
         _eventQuery = eventQuery;
     }
-    public async Task<List<EventResponse>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
+
+    public async Task<List<EventResponse>> Handle(GetFilteredEventsQuery request, CancellationToken ct)
     {
-        var list = await _eventQuery.GetAllAsync(cancellationToken);
+        var list = await _eventQuery.GetFilteredAsync(null, request.CategoryId, request.StatusId, ct);
+
         return list.Select(e => new EventResponse
         {
             EventId = e.EventId,

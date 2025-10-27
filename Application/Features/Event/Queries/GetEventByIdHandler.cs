@@ -29,7 +29,14 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
             Status = e.Status?.Name ?? "N/A",
             BannerImageUrl = e.BannerImageUrl,
             ThumbnailUrl = e.ThumbnailUrl,
-            ThemeColor = e.ThemeColor
+            ThemeColor = e.ThemeColor,
+            Sectors = e.EventSectors 
+                .Select(s => new EventSectorResponse
+                {
+                    EventSectorId = s.EventSectorId,                    
+                    Capacity = s.Capacity,
+                    Price = s.Price
+                }).ToList()
         };
     }
 }

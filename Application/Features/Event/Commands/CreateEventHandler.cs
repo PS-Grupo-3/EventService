@@ -29,8 +29,9 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
         {
             EventId = Guid.NewGuid(),
             VenueId = request.Request.VenueId,
-            UserId = request.Request.UserId,
+            UserToken = request.Request.UserToken,
             CategoryId = request.Request.CategoryId,
+            TypeId = request.Request.TypeId,
             StatusId = request.Request.StatusId,
             Name = request.Request.Name,
             Description = request.Request.Description,
@@ -50,6 +51,7 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
             EventId = entity.EventId,
             Name = entity.Name,
             Category = entity.Category.Name,
+            CategoryType = entity.CategoryType.Name,
             Status = entity.Status.Name,
             Time = entity.Time,
             Address = entity.Address

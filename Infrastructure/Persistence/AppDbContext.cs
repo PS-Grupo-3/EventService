@@ -11,6 +11,7 @@ namespace Infrastructure.Persistence
         public DbSet<Event> Events {  get; set; }
         public DbSet<EventStatus> EventStatuses { get; set; }
         public DbSet<EventCategory> EventCategories { get; set; }
+        public DbSet<CategoryType> CategoryTypes { get; set; }
         public DbSet<EventSector> EventSectors { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

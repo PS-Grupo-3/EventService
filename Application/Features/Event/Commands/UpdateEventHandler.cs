@@ -37,6 +37,8 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
             existing.ThemeColor = request.Request.ThemeColor;
         if (request.Request.CategoryId.HasValue)
             existing.CategoryId = request.Request.CategoryId.Value;
+        if (request.Request.TypeId.HasValue)
+            existing.TypeId = request.Request.TypeId.Value;
         if (request.Request.StatusId.HasValue)
             existing.StatusId = request.Request.StatusId.Value;
 

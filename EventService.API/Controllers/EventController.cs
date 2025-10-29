@@ -2,6 +2,7 @@
 using Application.Features.Event.Queries;
 using Application.Models.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -43,6 +44,7 @@ public class EventController : ControllerBase
 
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
         var result = await _mediator.Send(new CreateEventCommand(request));

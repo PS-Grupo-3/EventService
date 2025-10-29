@@ -21,7 +21,12 @@ public class GetEventCategoryByIdHandler : IRequestHandler<GetEventCategoryByIdQ
         return new EventCategoryResponse
         {
             CategoryId = category.CategoryId,
-            Name = category.Name
+            Name = category.Name,
+            CategoryTypes = category.CategoryTypes.Select(ct => new CategoryTypeResponse
+            {
+                TypeId = ct.TypeId,
+                Name = ct.Name
+            })
         };
     }
 }

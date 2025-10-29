@@ -40,13 +40,34 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryType",
+                columns: table => new
+                {
+                    TypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EventCategoryId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryType", x => x.TypeId);
+                    table.ForeignKey(
+                        name: "FK_CategoryType_EventCategory_EventCategoryId",
+                        column: x => x.EventCategoryId,
+                        principalTable: "EventCategory",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Event",
                 columns: table => new
                 {
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VenueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
+                    TypeId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -56,17 +77,29 @@ namespace Infrastructure.Migrations
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     BannerImageUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    ThemeColor = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "#FFFFFF")
+                    ThemeColor = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "#FFFFFF"),
+                    EventStatusStatusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Event", x => x.EventId);
+                    table.ForeignKey(
+                        name: "FK_Event_CategoryType_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "CategoryType",
+                        principalColumn: "TypeId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Event_EventCategory_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "EventCategory",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Event_EventStatus_EventStatusStatusId",
+                        column: x => x.EventStatusStatusId,
+                        principalTable: "EventStatus",
+                        principalColumn: "StatusId");
                     table.ForeignKey(
                         name: "FK_Event_EventStatus_StatusId",
                         column: x => x.StatusId,
@@ -102,14 +135,9 @@ namespace Infrastructure.Migrations
                 columns: new[] { "CategoryId", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Rock" },
-                    { 2, "Pop" },
-                    { 3, "Trap" },
-                    { 4, "Reggaeton" },
-                    { 5, "Electronic" },
-                    { 6, "Metal" },
-                    { 7, "Cumbia" },
-                    { 8, "Hip-Hop" }
+                    { 1, "Music" },
+                    { 2, "Stand-up" },
+                    { 3, "Conference" }
                 });
 
             migrationBuilder.InsertData(
@@ -123,10 +151,45 @@ namespace Infrastructure.Migrations
                     { 4, "Finished" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "CategoryType",
+                columns: new[] { "TypeId", "EventCategoryId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Rock" },
+                    { 2, 1, "Pop" },
+                    { 3, 1, "Trap" },
+                    { 4, 1, "Reggaeton" },
+                    { 5, 1, "Electronic" },
+                    { 6, 1, "Metal" },
+                    { 7, 1, "Cumbia" },
+                    { 8, 1, "Hip-Hop" },
+                    { 9, 2, "Comedy" },
+                    { 10, 2, "Satire" },
+                    { 11, 3, "Technology" },
+                    { 12, 3, "Business" },
+                    { 13, 3, "Education" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryType_EventCategoryId",
+                table: "CategoryType",
+                column: "EventCategoryId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Event_CategoryId",
                 table: "Event",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Event_CategoryId_TypeId",
+                table: "Event",
+                columns: new[] { "CategoryId", "TypeId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Event_EventStatusStatusId",
+                table: "Event",
+                column: "EventStatusStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Event_StatusId",
@@ -134,9 +197,14 @@ namespace Infrastructure.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_UserId",
+                name: "IX_Event_TypeId",
                 table: "Event",
-                column: "UserId");
+                column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Event_UserToken",
+                table: "Event",
+                column: "UserToken");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Event_VenueId",
@@ -164,10 +232,13 @@ namespace Infrastructure.Migrations
                 name: "Event");
 
             migrationBuilder.DropTable(
-                name: "EventCategory");
+                name: "CategoryType");
 
             migrationBuilder.DropTable(
                 name: "EventStatus");
+
+            migrationBuilder.DropTable(
+                name: "EventCategory");
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251020192304_init")]
+    [Migration("20251029191115_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -24,6 +24,109 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.CategoryType", b =>
+                {
+                    b.Property<int>("TypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeId"));
+
+                    b.Property<int>("EventCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("TypeId");
+
+                    b.HasIndex("EventCategoryId");
+
+                    b.ToTable("CategoryType", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TypeId = 1,
+                            EventCategoryId = 1,
+                            Name = "Rock"
+                        },
+                        new
+                        {
+                            TypeId = 2,
+                            EventCategoryId = 1,
+                            Name = "Pop"
+                        },
+                        new
+                        {
+                            TypeId = 3,
+                            EventCategoryId = 1,
+                            Name = "Trap"
+                        },
+                        new
+                        {
+                            TypeId = 4,
+                            EventCategoryId = 1,
+                            Name = "Reggaeton"
+                        },
+                        new
+                        {
+                            TypeId = 5,
+                            EventCategoryId = 1,
+                            Name = "Electronic"
+                        },
+                        new
+                        {
+                            TypeId = 6,
+                            EventCategoryId = 1,
+                            Name = "Metal"
+                        },
+                        new
+                        {
+                            TypeId = 7,
+                            EventCategoryId = 1,
+                            Name = "Cumbia"
+                        },
+                        new
+                        {
+                            TypeId = 8,
+                            EventCategoryId = 1,
+                            Name = "Hip-Hop"
+                        },
+                        new
+                        {
+                            TypeId = 9,
+                            EventCategoryId = 2,
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            TypeId = 10,
+                            EventCategoryId = 2,
+                            Name = "Satire"
+                        },
+                        new
+                        {
+                            TypeId = 11,
+                            EventCategoryId = 3,
+                            Name = "Technology"
+                        },
+                        new
+                        {
+                            TypeId = 12,
+                            EventCategoryId = 3,
+                            Name = "Business"
+                        },
+                        new
+                        {
+                            TypeId = 13,
+                            EventCategoryId = 3,
+                            Name = "Education"
+                        });
+                });
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
@@ -54,6 +157,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("EventStatusStatusId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -77,13 +183,17 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("VenueId")
                         .HasColumnType("uniqueidentifier");
@@ -92,11 +202,17 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("EventStatusStatusId");
+
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TypeId");
+
+                    b.HasIndex("UserToken");
 
                     b.HasIndex("VenueId");
+
+                    b.HasIndex("CategoryId", "TypeId");
 
                     b.ToTable("Event", (string)null);
                 });
@@ -122,42 +238,17 @@ namespace Infrastructure.Migrations
                         new
                         {
                             CategoryId = 1,
-                            Name = "Rock"
+                            Name = "Music"
                         },
                         new
                         {
                             CategoryId = 2,
-                            Name = "Pop"
+                            Name = "Stand-up"
                         },
                         new
                         {
                             CategoryId = 3,
-                            Name = "Trap"
-                        },
-                        new
-                        {
-                            CategoryId = 4,
-                            Name = "Reggaeton"
-                        },
-                        new
-                        {
-                            CategoryId = 5,
-                            Name = "Electronic"
-                        },
-                        new
-                        {
-                            CategoryId = 6,
-                            Name = "Metal"
-                        },
-                        new
-                        {
-                            CategoryId = 7,
-                            Name = "Cumbia"
-                        },
-                        new
-                        {
-                            CategoryId = 8,
-                            Name = "Hip-Hop"
+                            Name = "Conference"
                         });
                 });
 
@@ -232,6 +323,17 @@ namespace Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Entities.CategoryType", b =>
+                {
+                    b.HasOne("Domain.Entities.EventCategory", "EventCategory")
+                        .WithMany("CategoryTypes")
+                        .HasForeignKey("EventCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventCategory");
+                });
+
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.HasOne("Domain.Entities.EventCategory", "Category")
@@ -240,13 +342,25 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.EventStatus", "Status")
+                    b.HasOne("Domain.Entities.EventStatus", null)
                         .WithMany("Events")
+                        .HasForeignKey("EventStatusStatusId");
+
+                    b.HasOne("Domain.Entities.EventStatus", "Status")
+                        .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.CategoryType", "CategoryType")
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("CategoryType");
 
                     b.Navigation("Status");
                 });
@@ -269,6 +383,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.EventCategory", b =>
                 {
+                    b.Navigation("CategoryTypes");
+
                     b.Navigation("Events");
                 });
 

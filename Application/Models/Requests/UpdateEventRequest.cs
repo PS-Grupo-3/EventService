@@ -4,6 +4,7 @@ public class UpdateEventRequest
 {
     public Guid EventId { get; set; }
     public int? CategoryId { get; set; }
+    public int? TypeId { get; set; }
     public int? StatusId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }

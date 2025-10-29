@@ -1,10 +1,10 @@
 ﻿namespace Application.Models.Requests;
-
 public class CreateEventRequest
 {
     public Guid VenueId { get; set; }
-    public Guid UserId { get; set; }
+    public string UserToken { get; set; } = null!;
     public int CategoryId { get; set; }
+    public int TypeId { get; set; }
     public int StatusId { get; set; }
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;

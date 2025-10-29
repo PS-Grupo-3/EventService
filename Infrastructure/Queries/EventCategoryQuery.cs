@@ -16,12 +16,18 @@ public class EventCategoryQuery : IEventCategoryQuery
 
     public async Task<IEnumerable<EventCategory>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.EventCategories.ToListAsync(cancellationToken);
+        return await _context.EventCategories
+            .AsNoTracking()
+            .Include(c => c.CategoryTypes)
+            .OrderBy(c => c.CategoryId)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<EventCategory?> GetByIdAsync(int categoryId, CancellationToken cancellationToken = default)
     {
         return await _context.EventCategories
+            .Include(c => c.CategoryTypes)
             .FirstOrDefaultAsync(c => c.CategoryId == categoryId, cancellationToken);
     }
+
 }

@@ -30,4 +30,12 @@ public class EventCommand : IEventCommand
         _context.Events.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+    
+    public async Task LoadCategoryTypeAsync(Event evt, CancellationToken ct)
+    {
+        await _context.Entry(evt)
+            .Reference(e => e.CategoryType)
+            .LoadAsync(ct);
+    }
+
 }

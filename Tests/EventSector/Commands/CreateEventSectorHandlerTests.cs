@@ -13,7 +13,11 @@ public class CreateEventSectorHandlerTests
         var eventSectorCommandMock = new Mock<IEventSectorCommand>();
         var eventQueryMock = new Mock<IEventQuery>();
 
-        var existingEvent = new Domain.Entities.Event { EventId = Guid.NewGuid() };
+        var existingEvent = new Domain.Entities.Event
+        {
+            EventId = Guid.NewGuid(),
+            UserToken = null
+        };
         eventQueryMock
             .Setup(x => x.GetByIdAsync(existingEvent.EventId, default))
             .ReturnsAsync(existingEvent);

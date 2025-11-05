@@ -17,7 +17,8 @@ namespace Tests.Event.Commands
             var ev = new EventEntity
             {
                 EventId = Guid.NewGuid(),
-                StatusId = 1
+                StatusId = 1,
+                UserToken = "null"
             };
 
             qry.Setup(q => q.GetByIdAsync(ev.EventId, default))

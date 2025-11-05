@@ -18,7 +18,8 @@ namespace Tests.Event.Commands
             var existing = new EventEntity
             {
                 EventId = Guid.NewGuid(),
-                Name = "Viejo nombre"
+                Name = "Viejo nombre",
+                UserToken = "null"
             };
 
             eventQuery

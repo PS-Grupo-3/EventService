@@ -43,7 +43,7 @@ namespace Tests.Event.Commands
             var request = new CreateEventRequest
             {
                 VenueId = Guid.NewGuid(),
-                UserToken = Guid.NewGuid(),
+                UserToken = "token1234",
                 CategoryId = 1,
                 StatusId = 1,
                 Name = "Mega Rock Fest",

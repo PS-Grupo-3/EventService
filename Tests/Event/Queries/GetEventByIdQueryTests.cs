@@ -19,8 +19,15 @@ namespace Tests.Event.Queries
                 Description = "El último show",
                 Address = "Estadio",
                 Time = DateTime.UtcNow,
-                Category = new Domain.Entities.EventCategory { Name = "Rock" },
-                Status = new Domain.Entities.EventStatus { Name = "Active" }
+                Category = new Domain.Entities.EventCategory
+                {
+                    Name = "Rock"
+                },
+                Status = new Domain.Entities.EventStatus
+                {
+                    Name = "Active"
+                },
+                UserToken = null
             };
 
             eventQuery

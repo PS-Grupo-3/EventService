@@ -9,12 +9,14 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
     private readonly IEventCommand _eventCommand;
     private readonly IEventCategoryQuery _eventCategoryQuery;
     private readonly IEventStatusQuery _eventStatusQuery;
+    
     public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery)
     {
         _eventCommand = eventCommand;
         _eventCategoryQuery = eventCategoryQuery;
         _eventStatusQuery = eventStatusQuery;
     }
+    
     public async Task<EventResponse> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
         var category = await _eventCategoryQuery.GetByIdAsync(request.Request.CategoryId, cancellationToken);

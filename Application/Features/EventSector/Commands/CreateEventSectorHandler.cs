@@ -22,6 +22,15 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
         if (eventExists is null)
             throw new KeyNotFoundException($"No existe un evento con ID {request.Request.EventId}");
 
+        var alreadyAssigned = await _eventSectorCommand.ExistsAsync(
+            request.Request.EventId,
+            request.Request.SectorId,
+            cancellationToken);
+
+        if (alreadyAssigned)
+            throw new InvalidOperationException(
+                $"El sector {request.Request.SectorId} ya está asignado al evento {request.Request.EventId}");
+
         var entity = new Domain.Entities.EventSector
         {
             EventSectorId = Guid.NewGuid(),
@@ -44,4 +53,5 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
             Available = entity.Available
         };
     }
+
 }

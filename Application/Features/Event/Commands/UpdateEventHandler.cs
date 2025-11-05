@@ -14,6 +14,7 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
         _eventCommand = eventCommand;
         _eventQuery = eventQuery;
     }
+    
     public async Task<GenericResponse> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
         var existing = await _eventQuery.GetByIdAsync(request.Request.EventId, cancellationToken);
@@ -21,12 +22,14 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
         if (existing is null)
             throw new KeyNotFoundException($"No se encontró el evento con ID {request.Request.EventId}");
 
+        if (existing.StatusId == 4)
+            throw new InvalidOperationException(
+                $"El evento con ID {request.Request.EventId} ya está finalizado y no puede modificarse.");
+        
         if (request.Request.Name is not null)
             existing.Name = request.Request.Name;
         if (request.Request.Description is not null)
             existing.Description = request.Request.Description;
-        if (request.Request.Address is not null)
-            existing.Address = request.Request.Address;
         if (request.Request.Time.HasValue)
             existing.Time = request.Request.Time.Value;
         if (request.Request.BannerImageUrl is not null)
@@ -35,12 +38,9 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
             existing.ThumbnailUrl = request.Request.ThumbnailUrl;
         if (request.Request.ThemeColor is not null)
             existing.ThemeColor = request.Request.ThemeColor;
-        if (request.Request.CategoryId.HasValue)
-            existing.CategoryId = request.Request.CategoryId.Value;
-        if (request.Request.TypeId.HasValue)
-            existing.TypeId = request.Request.TypeId.Value;
         if (request.Request.StatusId.HasValue)
             existing.StatusId = request.Request.StatusId.Value;
+
 
         existing.Updated = DateTime.UtcNow;
 

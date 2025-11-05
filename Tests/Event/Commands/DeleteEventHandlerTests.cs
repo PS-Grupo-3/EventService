@@ -15,7 +15,11 @@ namespace Tests.Event.Commands
             var eventCommand = new Mock<IEventCommand>();
             var eventQuery = new Mock<IEventQuery>();
 
-            var ev = new EventEntity { EventId = Guid.NewGuid() };
+            var ev = new EventEntity
+            {
+                EventId = Guid.NewGuid(),
+                UserToken = "token1234"
+            };
 
             eventQuery
                 .Setup(x => x.GetByIdAsync(ev.EventId, default))

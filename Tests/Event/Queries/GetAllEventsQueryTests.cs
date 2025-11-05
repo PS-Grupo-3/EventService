@@ -14,21 +14,31 @@ namespace Tests.Event.Queries
 
             var events = new List<EventEntity>
             {
-                new() { EventId = Guid.NewGuid(), Name = "Evento A" },
-                new() { EventId = Guid.NewGuid(), Name = "Evento B" }
+                new()
+                {
+                    EventId = Guid.NewGuid(),
+                    Name = "Evento A",
+                    UserToken = null
+                },
+                new()
+                {
+                    EventId = Guid.NewGuid(),
+                    Name = "Evento B",
+                    UserToken = null
+                }
             };
 
             eventQuery
-                .Setup(e => e.GetFilteredAsync(null, null, null, default))
+                .Setup(e => e.GetFilteredAsync(null, null, null, null, null, default))
                 .ReturnsAsync(events);
 
             var handler = new GetFilteredEventsHandler(eventQuery.Object);
 
-            var result = await handler.Handle(new GetFilteredEventsQuery(null, null), default);
+            var result = await handler.Handle(new GetFilteredEventsQuery(null, null, null, null), default);
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
-            eventQuery.Verify(e => e.GetFilteredAsync(null, null, null, default), Times.Once);
+            eventQuery.Verify(e => e.GetFilteredAsync(null, null, null, null, null, default), Times.Once);
         }
     }
 }

@@ -4,7 +4,7 @@ using Application.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace EventService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]

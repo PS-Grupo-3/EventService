@@ -27,15 +27,17 @@ public class EventQuery : IEventQuery
     {
         return await _context.Events
             .Include(e => e.Category)
+            .Include(e => e.CategoryType)
             .Include(e => e.Status)
             .Include(e => e.EventSectors)
             .FirstOrDefaultAsync(e => e.EventId == eventId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Event>> GetFilteredAsync(Guid? eventId = null, int? categoryId = null, int? statusId = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Event>> GetFilteredAsync(Guid? eventId, int? categoryId, int? statusId, DateTime? from, DateTime? to, CancellationToken cancellationToken)
     {
         var query = _context.Events
             .Include(e => e.Category)
+            .Include(e => e.CategoryType)
             .Include(e => e.Status)
             .Include(e => e.EventSectors)
             .AsQueryable();
@@ -48,7 +50,19 @@ public class EventQuery : IEventQuery
 
         if (statusId.HasValue)
             query = query.Where(e => e.StatusId == statusId.Value);
+        
+        if (from.HasValue)
+            query = query.Where(e => e.Time >= from.Value);
+
+        if (to.HasValue)
+            query = query.Where(e => e.Time <= to.Value);
 
         return await query.ToListAsync(cancellationToken);
+    }
+    
+    public async Task<bool> CategoryTypeBelongsToCategoryAsync(int typeId, int categoryId, CancellationToken cancellationToken)
+    {
+        return await _context.CategoryTypes
+            .AnyAsync(ct => ct.TypeId == typeId && ct.EventCategoryId == categoryId, cancellationToken);
     }
 }

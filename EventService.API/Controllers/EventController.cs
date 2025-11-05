@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace EventService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -19,10 +19,10 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] int? categoryId, [FromQuery] int? statusId)
+    public async Task<IActionResult> Get([FromQuery] int? categoryId, [FromQuery] int? statusId, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
         var events = await _mediator.Send(
-            new GetFilteredEventsQuery(categoryId, statusId)
+            new GetFilteredEventsQuery(categoryId, statusId, from, to)
         );
 
         return Ok(events);
@@ -44,7 +44,8 @@ public class EventController : ControllerBase
 
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
+    [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
         var result = await _mediator.Send(new CreateEventCommand(request));

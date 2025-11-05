@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Command;
 using Domain.Entities;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Commands;
 
@@ -30,4 +31,11 @@ public class EventSectorCommand : IEventSectorCommand
         _context.EventSectors.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+    
+    public Task<bool> ExistsAsync(Guid eventId, Guid sectorId, CancellationToken ct)
+    {
+        return _context.EventSectors
+            .AnyAsync(x => x.EventId == eventId && x.SectorId == sectorId, ct);
+    }
+
 }

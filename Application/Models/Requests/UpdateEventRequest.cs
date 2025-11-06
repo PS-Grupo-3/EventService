@@ -7,6 +7,8 @@ public class UpdateEventRequest
     public string? Name { get; set; }
     public string? Description { get; set; }
     public DateTime? Time { get; set; }
+    public int? CategoryId { get; set; }
+    public int? TypeId { get; set; }
     public string? BannerImageUrl { get; set; }
     public string? ThumbnailUrl { get; set; }
     public string? ThemeColor { get; set; }

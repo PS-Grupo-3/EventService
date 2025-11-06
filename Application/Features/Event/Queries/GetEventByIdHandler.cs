@@ -26,6 +26,7 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
             Address = e.Address,
             Time = e.Time,
             Category = e.Category?.Name ?? "N/A",
+            Type = e.CategoryType?.Name ?? "N/A",
             Status = e.Status?.Name ?? "N/A",
             BannerImageUrl = e.BannerImageUrl,
             ThumbnailUrl = e.ThumbnailUrl,

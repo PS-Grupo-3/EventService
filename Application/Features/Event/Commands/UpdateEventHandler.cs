@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Command;
+﻿using Application.Exceptions;
+using Application.Interfaces.Command;
 using Application.Interfaces.Query;
 using Application.Models.Responses;
 using MediatR;
@@ -8,13 +9,17 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
 {
     private readonly IEventCommand _eventCommand;
     private readonly IEventQuery _eventQuery;
+    private readonly IEventCategoryQuery _eventCategoryQuery;
+    private readonly ICategoryTypeQuery _eventTypeQuery;
 
-    public UpdateEventHandler(IEventCommand eventCommand, IEventQuery eventQuery)
+    public UpdateEventHandler(IEventCommand eventCommand, IEventQuery eventQuery, IEventCategoryQuery eventCategoryQuery, ICategoryTypeQuery eventTypeQuery)
     {
         _eventCommand = eventCommand;
         _eventQuery = eventQuery;
+        _eventCategoryQuery = eventCategoryQuery;
+        _eventTypeQuery = eventTypeQuery;
     }
-    
+
     public async Task<GenericResponse> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
         var existing = await _eventQuery.GetByIdAsync(request.Request.EventId, cancellationToken);
@@ -41,6 +46,46 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
         if (request.Request.StatusId.HasValue)
             existing.StatusId = request.Request.StatusId.Value;
 
+        if (request.Request.CategoryId.HasValue)
+        {
+            var newCategoryId = request.Request.CategoryId.Value;
+            var category = await _eventCategoryQuery.GetByIdAsync(newCategoryId, cancellationToken);
+            if (category == null)
+                throw new BadRequestException400($"La Categoría con ID {newCategoryId} no existe.");
+
+            existing.CategoryId = newCategoryId;
+
+
+            if (request.Request.TypeId.HasValue)
+            {
+                var newTypeId = request.Request.TypeId.Value;
+                var type = await _eventTypeQuery.GetByIdAsync(newTypeId, cancellationToken);
+                if (type == null)
+                    throw new BadRequestException400($"El Tipo con ID {newTypeId} no existe.");
+
+                if (type.EventCategoryId != newCategoryId)
+                    throw new BadRequestException400($"El Tipo '{type.Name}' no pertenece a la Categoría '{category.Name}'.");
+
+                existing.TypeId = newTypeId;
+            }
+            else
+            {
+                existing.TypeId = null;
+            }
+        }
+        else if (request.Request.TypeId.HasValue) 
+        {
+            var newTypeId = request.Request.TypeId.Value;
+            var type = await _eventTypeQuery.GetByIdAsync(newTypeId, cancellationToken);
+            if (type == null)
+                throw new BadRequestException400($"El Tipo con ID {newTypeId} no existe.");
+
+            // Validar que el nuevo Tipo pertenezca a la Categoría ACTUAL del evento
+            if (type.EventCategoryId != existing.CategoryId)
+                throw new BadRequestException400($"El Tipo '{type.Name}' no pertenece a la categoría actual del evento ('{existing.Category.Name}').");
+
+            existing.TypeId = newTypeId;
+        }
 
         existing.Updated = DateTime.UtcNow;
 

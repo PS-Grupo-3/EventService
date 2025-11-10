@@ -1,6 +1,10 @@
-﻿using EventService.API.DependencyInjection;
+﻿using System.Security.Claims;
+using System.Text;
+using EventService.API.DependencyInjection;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,22 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 // Inyección de dependencias
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    var jwt = builder.Configuration.GetSection("Jwt");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwt["Issuer"],
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"])),
+        RoleClaimType = ClaimTypes.Role,
+    };
+
+}); 
 
 var app = builder.Build();
 

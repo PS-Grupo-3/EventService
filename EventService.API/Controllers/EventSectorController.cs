@@ -2,6 +2,7 @@
 using Application.Features.EventSector.Queries;
 using Application.Models.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventService.API.Controllers;
@@ -18,6 +19,7 @@ public class EventSectorController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _mediator.Send(new GetSectorByIdQuery(id));
@@ -25,6 +27,7 @@ public class EventSectorController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
     {
         var result = await _mediator.Send(new CreateEventSectorCommand(request));
@@ -32,6 +35,7 @@ public class EventSectorController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)
     {
         var result = await _mediator.Send(new UpdateEventSectorCommand(request));
@@ -39,6 +43,7 @@ public class EventSectorController : ControllerBase
     }
 
     [HttpPatch("/api/v1/EventSector/{id:guid}/availability")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateAvailability(Guid id, [FromBody] bool available)
     {
         var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available));
@@ -47,6 +52,7 @@ public class EventSectorController : ControllerBase
 
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var request = new DeleteEventSectorRequest { EventSectorId = id };

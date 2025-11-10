@@ -19,6 +19,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Get([FromQuery] int? categoryId, [FromQuery] int? statusId, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
         var events = await _mediator.Send(
@@ -29,6 +30,7 @@ public class EventController : ControllerBase
     }
    
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(Guid id)
     {
         var evt = await _mediator.Send(new GetEventByIdQuery(id));
@@ -36,6 +38,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("{id:guid}/sectors")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetSectors(Guid id)
     {
         var response = await _mediator.Send(new GetEventSectorsQuery(id));
@@ -44,7 +47,7 @@ public class EventController : ControllerBase
 
 
     [HttpPost]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
@@ -53,6 +56,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromBody] UpdateEventRequest request)
     {
         var result = await _mediator.Send(new UpdateEventCommand(request));
@@ -60,6 +64,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPatch("{id:guid}/status/{statusId:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateStatus(Guid id, int statusId)
     {
         var response = await _mediator.Send(new UpdateEventStatusCommand(id, statusId));
@@ -68,6 +73,7 @@ public class EventController : ControllerBase
 
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var request = new DeleteEventRequest { EventId = id };

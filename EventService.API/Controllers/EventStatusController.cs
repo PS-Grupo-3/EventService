@@ -1,10 +1,12 @@
 ﻿using Application.Features.EventStatus.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventService.API.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/v1/[controller]")]
 public class EventStatusController : ControllerBase
 {

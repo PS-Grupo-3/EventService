@@ -59,7 +59,7 @@ namespace EventService.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (!IsSuperAdmin)

@@ -62,7 +62,7 @@ namespace EventService.API.Controllers
             if (!IsAdmin)
                 return Forbid();
 
-            var result = await _mediator.Send(new UpdateEventCommand(request));
+            var result = await _mediator.Send(new UpdateEventCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
 
@@ -73,7 +73,7 @@ namespace EventService.API.Controllers
             if (!IsAdmin)
                 return Forbid();
 
-            var response = await _mediator.Send(new UpdateEventStatusCommand(id, statusId));
+            var response = await _mediator.Send(new UpdateEventStatusCommand(id, statusId, CurrentUserId, CurrentUserRole));
             return Ok(response);
         }
 
@@ -85,7 +85,7 @@ namespace EventService.API.Controllers
                 return Forbid();
 
             var request = new DeleteEventRequest { EventId = id };
-            var result = await _mediator.Send(new DeleteEventCommand(request));
+            var result = await _mediator.Send(new DeleteEventCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
     }

@@ -32,7 +32,7 @@ namespace EventService.API.Controllers
             if (!IsAdmin)
                 return Forbid();
 
-            var result = await _mediator.Send(new CreateEventSectorCommand(request));
+            var result = await _mediator.Send(new CreateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
 
@@ -43,7 +43,7 @@ namespace EventService.API.Controllers
             if (!IsAdmin)
                 return Forbid();
 
-            var result = await _mediator.Send(new UpdateEventSectorCommand(request));
+            var result = await _mediator.Send(new UpdateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
 
@@ -54,7 +54,7 @@ namespace EventService.API.Controllers
             if (!IsAdmin)
                 return Forbid();
 
-            var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available));
+            var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available, CurrentUserId, CurrentUserRole));
             return Ok(response);
         }
 

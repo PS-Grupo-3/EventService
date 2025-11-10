@@ -5,58 +5,69 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventService.API.Controllers;
-
-[ApiController]
-[Route("api/v1/[controller]")]
-public class EventSectorController : ControllerBase
+namespace EventService.API.Controllers
 {
-    private readonly IMediator _mediator;
-
-    public EventSectorController(IMediator mediator)
+    [Route("api/v1/[controller]")]
+    public class EventSectorController : BaseController
     {
-        _mediator = mediator;
-    }
+        private readonly IMediator _mediator;
 
-    [HttpGet("{id:guid}")]
-    [AllowAnonymous]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var result = await _mediator.Send(new GetSectorByIdQuery(id));
-        return Ok(result);
-    }
+        public EventSectorController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
-    {
-        var result = await _mediator.Send(new CreateEventSectorCommand(request));
-        return Ok(result);
-    }
+        [HttpGet("{id:guid}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _mediator.Send(new GetSectorByIdQuery(id));
+            return Ok(result);
+        }
 
-    [HttpPut]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)
-    {
-        var result = await _mediator.Send(new UpdateEventSectorCommand(request));
-        return Ok(result);
-    }
+        [HttpPost]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
+        {
+            if (!IsAdmin)
+                return Forbid();
 
-    [HttpPatch("/api/v1/EventSector/{id:guid}/availability")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateAvailability(Guid id, [FromBody] bool available)
-    {
-        var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available));
-        return Ok(response);
-    }
+            var result = await _mediator.Send(new CreateEventSectorCommand(request));
+            return Ok(result);
+        }
 
+        [HttpPut]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)
+        {
+            if (!IsAdmin)
+                return Forbid();
 
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "SuperAdmin")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        var request = new DeleteEventSectorRequest { EventSectorId = id };
-        var result = await _mediator.Send(new DeleteEventSectorCommand(request));
-        return Ok(result);
+            var result = await _mediator.Send(new UpdateEventSectorCommand(request));
+            return Ok(result);
+        }
+
+        [HttpPatch("{id:guid}/availability")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<IActionResult> UpdateAvailability(Guid id, [FromBody] bool available)
+        {
+            if (!IsAdmin)
+                return Forbid();
+
+            var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available));
+            return Ok(response);
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (!IsSuperAdmin)
+                return Forbid();
+
+            var request = new DeleteEventSectorRequest { EventSectorId = id };
+            var result = await _mediator.Send(new DeleteEventSectorCommand(request));
+            return Ok(result);
+        }
     }
 }

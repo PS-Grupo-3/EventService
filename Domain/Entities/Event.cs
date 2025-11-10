@@ -3,7 +3,6 @@ public class Event
 {
     public Guid EventId { get; set; }
     public Guid VenueId { get; set; }
-    public required string UserToken { get; set; }
     public int CategoryId { get; set; } 
     public int? TypeId { get; set; }
     public int StatusId { get; set; }

@@ -1,4 +1,5 @@
-﻿using Application.Features.Event.Commands;
+﻿using System.Security.Claims;
+using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
 using Application.Models.Requests;
 using MediatR;
@@ -47,13 +48,17 @@ public class EventController : ControllerBase
 
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
-        var result = await _mediator.Send(new CreateEventCommand(request));
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+        var command = new CreateEventCommand(request, userId, userRole);
+        var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(Get), new { id = result.EventId }, result);
     }
+
 
     [HttpPut]
     [Authorize(Roles = "Admin")]

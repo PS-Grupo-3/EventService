@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class correccion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,7 +65,6 @@ namespace Infrastructure.Migrations
                 {
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VenueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     TypeId = table.Column<int>(type: "int", nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
@@ -200,11 +199,6 @@ namespace Infrastructure.Migrations
                 name: "IX_Event_TypeId",
                 table: "Event",
                 column: "TypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Event_UserToken",
-                table: "Event",
-                column: "UserToken");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Event_VenueId",

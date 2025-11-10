@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251110020201_Init")]
-    partial class Init
+    [Migration("20251110032504_correccion")]
+    partial class correccion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,10 +191,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("UserToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<Guid>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
@@ -207,8 +203,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("StatusId");
 
                     b.HasIndex("TypeId");
-
-                    b.HasIndex("UserToken");
 
                     b.HasIndex("VenueId");
 

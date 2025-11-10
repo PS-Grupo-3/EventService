@@ -27,11 +27,13 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
         if (status is null)
             throw new KeyNotFoundException($"No existe un estado con ID {request.Request.StatusId}");
 
+        if (request.UserRole == "Current")
+            throw new UnauthorizedAccessException("Los usuarios comunes no pueden crear eventos.");
+
         var entity = new Domain.Entities.Event
         {
             EventId = Guid.NewGuid(),
             VenueId = request.Request.VenueId,
-            UserToken = request.Request.UserToken,
             CategoryId = request.Request.CategoryId,
             TypeId = request.Request.TypeId,
             StatusId = request.Request.StatusId,

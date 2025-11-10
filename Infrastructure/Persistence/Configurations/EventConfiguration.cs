@@ -60,7 +60,6 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasForeignKey(es => es.EventId);
 
         builder.HasIndex(e => e.VenueId);
-        builder.HasIndex(e => e.UserToken);
         builder.HasIndex(e => e.CategoryId);
         builder.HasIndex(e => e.TypeId);         
         builder.HasIndex(e => e.StatusId);

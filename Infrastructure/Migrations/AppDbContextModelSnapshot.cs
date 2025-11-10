@@ -188,10 +188,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("UserToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<Guid>("VenueId")
                         .HasColumnType("uniqueidentifier");
 
@@ -204,8 +200,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("StatusId");
 
                     b.HasIndex("TypeId");
-
-                    b.HasIndex("UserToken");
 
                     b.HasIndex("VenueId");
 

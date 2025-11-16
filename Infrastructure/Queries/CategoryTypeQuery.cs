@@ -22,7 +22,8 @@ namespace Infrastructure.Queries
 
         public async Task<IEnumerable<CategoryType>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.CategoryTypes 
+            return await _context.CategoryTypes
+                                .Include(ct => ct.EventCategory)
                                  .AsNoTracking()
                                  .ToListAsync(cancellationToken);
         }
@@ -30,6 +31,7 @@ namespace Infrastructure.Queries
         public async Task<CategoryType?> GetByIdAsync(int id, CancellationToken cancellationToken = default) 
         {
             return await _context.CategoryTypes
+                                  .Include(ct => ct.EventCategory)
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(t => t.TypeId == id, cancellationToken);
         }

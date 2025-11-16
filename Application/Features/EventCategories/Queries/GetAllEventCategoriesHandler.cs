@@ -19,13 +19,6 @@ public class GetAllEventCategoriesHandler : IRequestHandler<GetAllEventCategorie
         {
             CategoryId = categories.CategoryId,
             Name = categories.Name,
-            CategoryTypes = categories.CategoryTypes
-            .OrderBy(t => t.TypeId)
-            .Select(t => new CategoryTypeResponse
-            {
-                TypeId = t.TypeId,
-                Name = t.Name
-            })
         }).ToList();
     }
 }

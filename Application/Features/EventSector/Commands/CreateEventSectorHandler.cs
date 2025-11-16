@@ -22,6 +22,7 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
         if (eventExists is null)
             throw new KeyNotFoundException($"No existe un evento con ID {request.Request.EventId}");
 
+
         var alreadyAssigned = await _eventSectorCommand.ExistsAsync(
             request.Request.EventId,
             request.Request.SectorId,
@@ -30,6 +31,13 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
         if (alreadyAssigned)
             throw new InvalidOperationException(
                 $"El sector {request.Request.SectorId} ya está asignado al evento {request.Request.EventId}");
+
+        if (request.Request.Capacity < 0)
+            throw new ArgumentException("No se permite una capacidad menor a 0.");
+
+        if (request.Request.Price < 0)
+            throw new ArgumentException("No se permite un precio menor a 0.");
+
 
         var entity = new Domain.Entities.EventSector
         {

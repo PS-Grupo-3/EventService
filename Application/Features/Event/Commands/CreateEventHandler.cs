@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Command;
+﻿using Application.Exceptions;
+using Application.Interfaces.Command;
 using Application.Interfaces.Query;
 using Application.Models.Responses;
 using MediatR;
@@ -9,19 +10,28 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
     private readonly IEventCommand _eventCommand;
     private readonly IEventCategoryQuery _eventCategoryQuery;
     private readonly IEventStatusQuery _eventStatusQuery;
-    
-    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery)
+    private readonly ICategoryTypeQuery _categoryTypeQuery;
+
+    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery)
     {
         _eventCommand = eventCommand;
         _eventCategoryQuery = eventCategoryQuery;
         _eventStatusQuery = eventStatusQuery;
+        _categoryTypeQuery = categoryTypeQuery;
     }
-    
+
     public async Task<EventResponse> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
         var category = await _eventCategoryQuery.GetByIdAsync(request.Request.CategoryId, cancellationToken);
+        var categoryType = await _categoryTypeQuery.GetByIdAsync(request.Request.TypeId, cancellationToken);
+
         if (category is null)
             throw new KeyNotFoundException($"No existe una categoría con ID {request.Request.CategoryId}");
+        if (categoryType is null)
+            throw new KeyNotFoundException($"No existe un tipo de categoría con ID {request.Request.TypeId}");
+
+        if (categoryType.EventCategoryId != category.CategoryId)
+            throw new KeyNotFoundException("El tipo de categoría no pertenece a la categoría elegida");
 
         var status = await _eventStatusQuery.GetByIdAsync(request.Request.StatusId, cancellationToken);
         if (status is null)
@@ -29,6 +39,9 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
 
         if (request.UserRole == "Current")
             throw new UnauthorizedAccessException("Los usuarios comunes no pueden crear eventos.");
+
+        if (request.Request.Time < DateTime.UtcNow)
+            throw new ArgumentException("Ingrese una fecha válida");
 
         var entity = new Domain.Entities.Event
         {

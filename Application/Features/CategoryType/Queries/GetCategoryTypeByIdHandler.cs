@@ -3,7 +3,7 @@ using Application.Models.Responses;
 using MediatR;
 
 namespace Application.Features.EventCategories.Queries;
-public class GetEventCategoryTypeByIdHandler : IRequestHandler<GetCategoryTypeByIdQuery, CategoryTypeResponse>
+public class GetEventCategoryTypeByIdHandler : IRequestHandler<GetCategoryTypeByIdQuery, CategoryTypeDetailsResponse>
 {
     private readonly ICategoryTypeQuery _eventCategoryTypeQuery;
 
@@ -12,17 +12,18 @@ public class GetEventCategoryTypeByIdHandler : IRequestHandler<GetCategoryTypeBy
         _eventCategoryTypeQuery = eventCategoryTypeQuery;
     }
 
-    public async Task<CategoryTypeResponse> Handle(GetCategoryTypeByIdQuery request, CancellationToken cancellationToken)
+    public async Task<CategoryTypeDetailsResponse> Handle(GetCategoryTypeByIdQuery request, CancellationToken cancellationToken)
     {
         var categoryType = await _eventCategoryTypeQuery.GetByIdAsync(request.TypeId, cancellationToken);
 
         if (categoryType is null)
             throw new ArgumentNullException($"No se encontró el tipo de categoría con el ID {request.TypeId}");
 
-        return new CategoryTypeResponse
+        return new CategoryTypeDetailsResponse
         {
             TypeId = categoryType.TypeId,
-            Name = categoryType.Name
+            Name = categoryType.Name,
+            EventCategory = categoryType.EventCategory.Name
         };
     }
 }

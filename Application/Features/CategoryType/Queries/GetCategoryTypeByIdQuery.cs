@@ -2,4 +2,4 @@
 using MediatR;
 
 namespace Application.Features.EventCategories.Queries;
-public record GetCategoryTypeByIdQuery(int TypeId) : IRequest<CategoryTypeResponse>;
+public record GetCategoryTypeByIdQuery(int TypeId) : IRequest<CategoryTypeDetailsResponse>;

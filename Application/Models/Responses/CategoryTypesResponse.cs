@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.Models.Responses
 {
-    public class EventCategoryResponse
+    public class CategoryTypesResponse
     {
-        public int CategoryId { get; set; }
+        public int TypeId { get; set; }
         public string Name { get; set; } = null!;
     }
 }

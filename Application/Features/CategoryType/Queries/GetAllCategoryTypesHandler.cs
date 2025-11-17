@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.EventCategories.Queries
 {
-    public class GetAllCategoryTypesQueryHandler : IRequestHandler<GetAllCategoryTypesQuery, List<CategoryTypeResponse>>
+    public class GetAllCategoryTypesQueryHandler : IRequestHandler<GetAllCategoryTypesQuery, List<CategoryTypeDetailsResponse>>
     {
         private readonly ICategoryTypeQuery _eventTypeQuery;
 
@@ -13,14 +13,16 @@ namespace Application.Features.EventCategories.Queries
             _eventTypeQuery = eventTypeQuery;
         }
 
-        public async Task<List<CategoryTypeResponse>> Handle(GetAllCategoryTypesQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryTypeDetailsResponse>> Handle(GetAllCategoryTypesQuery request, CancellationToken cancellationToken)
         {
             var categoryTypes = await _eventTypeQuery.GetAllAsync();
+            
 
-            var response = categoryTypes.Select(ct => new CategoryTypeResponse
+            var response = categoryTypes.Select(ct => new CategoryTypeDetailsResponse
             {
                 TypeId = ct.TypeId,
-                Name = ct.Name
+                Name = ct.Name,
+                EventCategory = ct.EventCategory.Name
             });
 
 

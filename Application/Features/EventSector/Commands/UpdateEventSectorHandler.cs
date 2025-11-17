@@ -30,6 +30,12 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
         if (request.Request.Available.HasValue)
             existing.Available = request.Request.Available.Value;
 
+        if (request.Request.Capacity < 0)
+            throw new ArgumentException("No se permite una capacidad menor a 0.");
+
+        if (request.Request.Price < 0)
+            throw new ArgumentException("No se permite un precio menor a 0.");
+
         await _eventSectorCommand.UpdateAsync(existing, cancellationToken);
 
         return new GenericResponse

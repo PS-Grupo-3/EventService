@@ -30,7 +30,16 @@ builder.Services.AddSwaggerGen(c =>
 
 // Base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+
+    options.EnableSensitiveDataLogging();   
+    options.EnableDetailedErrors();         
+    options.LogTo(Console.WriteLine,        
+        Microsoft.Extensions.Logging.LogLevel.Information);
+});
+
 
 // Inyección de dependencias
 builder.Services.AddApplication();

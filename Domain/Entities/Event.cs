@@ -13,8 +13,8 @@ public class Event
     public DateTime Updated { get; set; }        
     public DateTime Time { get; set; }
     public string Address { get; set; } = null!;        
-    public string BannerImageUrl { get; set; } = null!;
-    public string ThumbnailUrl { get; set; } = null!;
+    public string BannerImageUrl { get; set; }
+    public string ThumbnailUrl { get; set; }
     public string ThemeColor { get; set; } = "#FFFFFF";
 
     public EventCategory Category { get; set; } = null!;

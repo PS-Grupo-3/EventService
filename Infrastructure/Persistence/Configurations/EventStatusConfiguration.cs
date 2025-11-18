@@ -15,6 +15,11 @@ namespace Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.HasMany(s => s.Events)
+                .WithOne(e => e.Status)
+                .HasForeignKey(e => e.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasData(
                 new EventStatus { StatusId = 1, Name = "Scheduled" },
                 new EventStatus { StatusId = 2, Name = "Active" },

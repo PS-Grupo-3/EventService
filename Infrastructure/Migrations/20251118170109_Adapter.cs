@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initImagenes : Migration
+    public partial class Adapter : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,8 +76,7 @@ namespace Infrastructure.Migrations
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     BannerImageUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    ThemeColor = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "#FFFFFF"),
-                    EventStatusStatusId = table.Column<int>(type: "int", nullable: true)
+                    ThemeColor = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "#FFFFFF")
                 },
                 constraints: table =>
                 {
@@ -95,11 +94,6 @@ namespace Infrastructure.Migrations
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Event_EventStatus_EventStatusStatusId",
-                        column: x => x.EventStatusStatusId,
-                        principalTable: "EventStatus",
-                        principalColumn: "StatusId");
-                    table.ForeignKey(
                         name: "FK_Event_EventStatus_StatusId",
                         column: x => x.StatusId,
                         principalTable: "EventStatus",
@@ -113,10 +107,11 @@ namespace Infrastructure.Migrations
                 {
                     EventSectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VenueSectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    IsControlled = table.Column<bool>(type: "bit", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Available = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false, defaultValue: 0m)
                 },
                 constraints: table =>
                 {
@@ -126,6 +121,64 @@ namespace Infrastructure.Migrations
                         column: x => x.EventId,
                         principalTable: "Event",
                         principalColumn: "EventId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventSeat",
+                columns: table => new
+                {
+                    EventSeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventSectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Row = table.Column<int>(type: "int", nullable: false),
+                    Column = table.Column<int>(type: "int", nullable: false),
+                    PosX = table.Column<int>(type: "int", nullable: false),
+                    PosY = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false, defaultValue: 0m),
+                    Available = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventSeat", x => x.EventSeatId);
+                    table.ForeignKey(
+                        name: "FK_EventSeat_EventSector_EventSectorId",
+                        column: x => x.EventSectorId,
+                        principalTable: "EventSector",
+                        principalColumn: "EventSectorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventSeat_Event_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Event",
+                        principalColumn: "EventId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventSectorShape",
+                columns: table => new
+                {
+                    EventSectorShapeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventSectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    X = table.Column<int>(type: "int", nullable: false),
+                    Y = table.Column<int>(type: "int", nullable: false),
+                    Rotation = table.Column<int>(type: "int", nullable: false),
+                    Padding = table.Column<int>(type: "int", nullable: false),
+                    Opacity = table.Column<int>(type: "int", nullable: false),
+                    Colour = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventSectorShape", x => x.EventSectorShapeId);
+                    table.ForeignKey(
+                        name: "FK_EventSectorShape_EventSector_EventSectorId",
+                        column: x => x.EventSectorId,
+                        principalTable: "EventSector",
+                        principalColumn: "EventSectorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -186,11 +239,6 @@ namespace Infrastructure.Migrations
                 columns: new[] { "CategoryId", "TypeId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_EventStatusStatusId",
-                table: "Event",
-                column: "EventStatusStatusId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Event_StatusId",
                 table: "Event",
                 column: "StatusId");
@@ -206,19 +254,41 @@ namespace Infrastructure.Migrations
                 column: "VenueId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EventSeat_EventId_EventSectorId",
+                table: "EventSeat",
+                columns: new[] { "EventId", "EventSectorId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventSeat_EventSectorId_Row_Column",
+                table: "EventSeat",
+                columns: new[] { "EventSectorId", "Row", "Column" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EventSector_EventId",
                 table: "EventSector",
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventSector_SectorId",
+                name: "IX_EventSector_VenueSectorId",
                 table: "EventSector",
-                column: "SectorId");
+                column: "VenueSectorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventSectorShape_EventSectorId",
+                table: "EventSectorShape",
+                column: "EventSectorId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EventSeat");
+
+            migrationBuilder.DropTable(
+                name: "EventSectorShape");
+
             migrationBuilder.DropTable(
                 name: "EventSector");
 

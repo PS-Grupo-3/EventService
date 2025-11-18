@@ -43,10 +43,9 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
         {
             EventSectorId = Guid.NewGuid(),
             EventId = request.Request.EventId,
-            SectorId = request.Request.SectorId,
+            VenueSectorId = request.Request.SectorId,
             Capacity = request.Request.Capacity,
             Price = request.Request.Price,
-            Available = request.Request.Available
         };
 
         await _eventSectorCommand.InsertAsync(entity, cancellationToken);
@@ -55,10 +54,9 @@ public class CreateEventSectorHandler : IRequestHandler<CreateEventSectorCommand
         {
             EventSectorId = entity.EventSectorId,
             EventId = entity.EventId,
-            SectorId = entity.SectorId,
+            SectorId = entity.VenueSectorId,
             Capacity = entity.Capacity,
-            Price = entity.Price,
-            Available = entity.Available
+            Price = entity.Price
         };
     }
 

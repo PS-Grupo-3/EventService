@@ -17,7 +17,9 @@ public class EventQuery : IEventQuery
     public async Task<IEnumerable<Event>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Events
+            .AsNoTracking()
             .Include(e => e.Category)
+            .Include(e => e.CategoryType)
             .Include(e => e.Status)
             .Include(e => e.EventSectors)
             .ToListAsync(cancellationToken);

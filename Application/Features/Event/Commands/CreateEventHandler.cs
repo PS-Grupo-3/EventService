@@ -1,7 +1,8 @@
-﻿using Application.Exceptions;
+﻿using Application.Interfaces.Adapter;
 using Application.Interfaces.Command;
 using Application.Interfaces.Query;
 using Application.Models.Responses;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Event.Commands;
@@ -13,12 +14,13 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
     private readonly ICategoryTypeQuery _categoryTypeQuery;
     private readonly IVenueClient _venueClient;
 
-    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery)
+    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery, IVenueClient venueClient)
     {
         _eventCommand = eventCommand;
         _eventCategoryQuery = eventCategoryQuery;
         _eventStatusQuery = eventStatusQuery;
         _categoryTypeQuery = categoryTypeQuery;
+        _venueClient = venueClient;
     }
 
     public async Task<EventResponse> Handle(CreateEventCommand request, CancellationToken cancellationToken)
@@ -61,7 +63,69 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
             ThumbnailUrl = request.Request.ThumbnailUrl,
             ThemeColor = request.Request.ThemeColor
         };
+        
+        // ADAPTER
+        var venueSnapshot = await _venueClient.GetVenue(request.Request.VenueId.ToString());
+        if (venueSnapshot == null)
+            throw new KeyNotFoundException("Venue no encontrado");
+        
+        foreach (var s in venueSnapshot.Sectors)
+        {
+            var sectorDetail = await _venueClient.GetSector(s.SectorId.ToString());
+            if (sectorDetail == null)
+                throw new Exception($"Sector {s.SectorId} no encontrado en VenueService");
 
+            var eventSector = new Domain.Entities.EventSector
+            {
+                EventSectorId = Guid.NewGuid(),
+                EventId = entity.EventId,
+                VenueSectorId = s.SectorId,
+                Name = s.Name,
+                IsControlled = s.IsControlled,
+                Capacity = s.Capacity ?? s.SeatCount
+            };
+
+            var shape = sectorDetail.Shape;
+            if (shape == null)
+                throw new Exception($"El sector {s.SectorId} no tiene Shape definido");
+
+            eventSector.Shape = new EventSectorShape
+            {
+                EventSectorShapeId = Guid.NewGuid(),
+                EventSectorId = eventSector.EventSectorId,
+                Type = shape.Type,
+                Width = shape.Width,
+                Height = shape.Height,
+                X = shape.X,
+                Y = shape.Y,
+                Rotation = shape.Rotation,
+                Padding = shape.Padding,
+                Opacity = shape.Opacity,
+                Colour = shape.Colour
+            };
+
+            foreach (var seat in sectorDetail.Seats)
+            {
+                eventSector.Seats.Add(new EventSeat
+                {
+                    EventSeatId = Guid.NewGuid(),
+                    EventId = entity.EventId,
+                    EventSectorId = eventSector.EventSectorId,
+                    Row = seat.RowNumber,
+                    Column = seat.ColumnNumber,
+                    PosX = seat.PosX,
+                    PosY = seat.PosY,
+                    Price = 0,
+                    Available = true
+                });
+            }
+
+            entity.EventSectors.Add(eventSector);
+        }
+
+        // ADAPTER
+        
+        
         await _eventCommand.InsertAsync(entity, cancellationToken);
 
         return new EventResponse

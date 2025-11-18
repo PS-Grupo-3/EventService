@@ -139,7 +139,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("BannerImageUrl")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("nvarchar(300)")
+                        .HasColumnName("BannerImageUrl");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -153,9 +154,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<int?>("EventStatusStatusId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -175,7 +173,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ThumbnailUrl")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("nvarchar(300)")
+                        .HasColumnName("ThumbnailUrl");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -194,8 +193,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("EventId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("EventStatusStatusId");
 
                     b.HasIndex("StatusId");
 
@@ -243,9 +240,10 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Domain.Entities.EventSector", b =>
+            modelBuilder.Entity("Domain.Entities.EventSeat", b =>
                 {
-                    b.Property<Guid>("EventSectorId")
+                    b.Property<Guid>("EventSeatId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Available")
@@ -253,25 +251,123 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<int>("Column")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EventSectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PosX")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PosY")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("Row")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventSeatId");
+
+                    b.HasIndex("EventId", "EventSectorId");
+
+                    b.HasIndex("EventSectorId", "Row", "Column");
+
+                    b.ToTable("EventSeat", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSector", b =>
+                {
+                    b.Property<Guid>("EventSectorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<bool>("IsControlled")
+                        .HasColumnType("bit");
 
-                    b.Property<Guid>("SectorId")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<Guid>("VenueSectorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("EventSectorId");
 
                     b.HasIndex("EventId");
 
-                    b.HasIndex("SectorId");
+                    b.HasIndex("VenueSectorId");
 
                     b.ToTable("EventSector", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSectorShape", b =>
+                {
+                    b.Property<Guid>("EventSectorShapeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Colour")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("EventSectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Opacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Padding")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rotation")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
+                    b.Property<int>("X")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventSectorShapeId");
+
+                    b.HasIndex("EventSectorId")
+                        .IsUnique();
+
+                    b.ToTable("EventSectorShape", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.EventStatus", b =>
@@ -333,12 +429,8 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.EventStatus", null)
-                        .WithMany("Events")
-                        .HasForeignKey("EventStatusStatusId");
-
                     b.HasOne("Domain.Entities.EventStatus", "Status")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -355,6 +447,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("Domain.Entities.EventSeat", b =>
+                {
+                    b.HasOne("Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.EventSector", "EventSector")
+                        .WithMany("Seats")
+                        .HasForeignKey("EventSectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("EventSector");
+                });
+
             modelBuilder.Entity("Domain.Entities.EventSector", b =>
                 {
                     b.HasOne("Domain.Entities.Event", "Event")
@@ -364,6 +475,17 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSectorShape", b =>
+                {
+                    b.HasOne("Domain.Entities.EventSector", "EventSector")
+                        .WithOne("Shape")
+                        .HasForeignKey("Domain.Entities.EventSectorShape", "EventSectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventSector");
                 });
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
@@ -376,6 +498,14 @@ namespace Infrastructure.Migrations
                     b.Navigation("CategoryTypes");
 
                     b.Navigation("Events");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventSector", b =>
+                {
+                    b.Navigation("Seats");
+
+                    b.Navigation("Shape")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.EventStatus", b =>

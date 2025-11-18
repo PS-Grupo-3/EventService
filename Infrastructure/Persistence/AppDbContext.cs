@@ -13,6 +13,9 @@ namespace Infrastructure.Persistence
         public DbSet<EventCategory> EventCategories { get; set; }
         public DbSet<CategoryType> CategoryTypes { get; set; }
         public DbSet<EventSector> EventSectors { get; set; }
+        public DbSet<EventSectorShape> EventSectorShapes { get; set; }
+        public DbSet<EventSeat> EventSeats { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

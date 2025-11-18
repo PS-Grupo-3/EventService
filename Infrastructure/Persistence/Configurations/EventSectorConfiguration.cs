@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Configurations;
+namespace Infrastructure.Persistence.Configurations;
 
 public class EventSectorConfiguration : IEntityTypeConfiguration<EventSector>
 {
@@ -10,34 +10,33 @@ public class EventSectorConfiguration : IEntityTypeConfiguration<EventSector>
     {
         builder.ToTable("EventSector");
 
-        builder.HasKey(es => es.EventSectorId);
+        builder.HasKey(e => e.EventSectorId);
 
-        builder.Property(es => es.EventSectorId)
-            .ValueGeneratedNever();
-
-        builder.Property(es => es.EventId)
+        builder.Property(e => e.Name)
+            .HasMaxLength(150)
             .IsRequired();
 
-        builder.Property(es => es.SectorId)
+        builder.Property(e => e.IsControlled)
             .IsRequired();
 
-        builder.Property(es => es.Capacity)
+        builder.Property(e => e.Capacity)
             .IsRequired();
 
-        builder.Property(es => es.Price)
-            .HasColumnType("decimal(10,2)")
-            .IsRequired();
+        builder.Property(e => e.Price)
+            .HasPrecision(10, 2)
+            .HasDefaultValue(0);
 
-        builder.Property(es => es.Available)
-            .HasDefaultValue(true)
-            .IsRequired();
-
-        builder.HasOne(es => es.Event)
-            .WithMany(e => e.EventSectors)
-            .HasForeignKey(es => es.EventId)
+        builder.HasOne(e => e.Event)
+            .WithMany(ev => ev.EventSectors)
+            .HasForeignKey(e => e.EventId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(es => es.EventId);
-        builder.HasIndex(es => es.SectorId);
+        builder.HasOne(e => e.Shape)
+            .WithOne(s => s.EventSector)
+            .HasForeignKey<EventSectorShape>(s => s.EventSectorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(e => e.EventId);
+        builder.HasIndex(e => e.VenueSectorId);
     }
 }

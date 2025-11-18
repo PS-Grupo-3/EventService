@@ -3,6 +3,7 @@
 public class EventResponse
 {
     public Guid EventId { get; set; }
+    public Guid VenueId { get; set; } 
     public string Name { get; set; } = null!;
     public string Category { get; set; } = null!;
     public string CategoryType { get; set; } = null!;

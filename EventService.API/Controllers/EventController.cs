@@ -19,11 +19,7 @@ namespace EventService.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Get(
-            [FromQuery] int? categoryId,
-            [FromQuery] int? statusId,
-            [FromQuery] DateTime? from,
-            [FromQuery] DateTime? to)
+        public async Task<IActionResult> Get([FromQuery] int? categoryId, [FromQuery] int? statusId, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
         {
             var query = new GetFilteredEventsQuery(categoryId, statusId, from, to);
             var events = await _mediator.Send(query);

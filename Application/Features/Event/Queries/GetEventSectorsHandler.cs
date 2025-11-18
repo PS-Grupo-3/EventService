@@ -20,10 +20,9 @@ public class GetEventSectorsHandler : IRequestHandler<GetEventSectorsQuery, IEnu
         {
             EventSectorId = s.EventSectorId,
             EventId = s.EventId,
-            SectorId = s.SectorId,
+            SectorId = s.VenueSectorId,
             Capacity = s.Capacity,
-            Price = s.Price,
-            Available = s.Available
+            Price = s.Price
         }).ToList();
     }
 

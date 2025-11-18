@@ -20,8 +20,7 @@ public class UpdateEventSectorAvailabilityHandler : IRequestHandler<UpdateEventS
         var es = await _query.GetByIdAsync(req.EventSectorId, ct);
         if (es is null)
             throw new KeyNotFoundException($"No se encontró el EventSector con ID {req.EventSectorId}");
-
-        es.Available = req.Available;
+        
         await _command.UpdateAsync(es, ct);
 
         return new GenericResponse {

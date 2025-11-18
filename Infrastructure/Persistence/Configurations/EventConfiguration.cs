@@ -21,11 +21,14 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
             .HasMaxLength(300);
 
         builder.Property(e => e.BannerImageUrl)
+            .HasColumnName("BannerImageUrl")
             .HasMaxLength(300);
 
         builder.Property(e => e.ThumbnailUrl)
-            .IsRequired()
-            .HasMaxLength(300);
+            .HasColumnName("ThumbnailUrl")
+            .HasMaxLength(300)
+            .IsRequired();
+
 
         builder.Property(e => e.ThemeColor)
             .HasMaxLength(20)

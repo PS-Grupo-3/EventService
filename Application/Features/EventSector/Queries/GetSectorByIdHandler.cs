@@ -22,10 +22,9 @@ public class GetSectorByIdHandler : IRequestHandler<GetSectorByIdQuery, EventSec
         {
             EventSectorId = entity.EventSectorId,
             EventId = entity.EventId,
-            SectorId = entity.SectorId,
+            SectorId = entity.VenueSectorId,
             Capacity = entity.Capacity,
-            Price = entity.Price,
-            Available = entity.Available
+            Price = entity.Price
         };
     }
 }

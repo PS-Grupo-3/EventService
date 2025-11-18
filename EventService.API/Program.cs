@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Application.Interfaces.Adapter;
 using EventService.API.DependencyInjection;
+using Infrastructure.Adapter;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +47,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.services.AddHttpClient<IVenueClient, VenueHttpClient>(c =>
+builder.Services.AddHttpClient<IVenueClient, VenueHttpClient>(c =>
 {
     c.BaseAddress = new Uri("http://localhost:5136");
 });

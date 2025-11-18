@@ -35,7 +35,7 @@ public class EventSectorCommand : IEventSectorCommand
     public Task<bool> ExistsAsync(Guid eventId, Guid sectorId, CancellationToken ct)
     {
         return _context.EventSectors
-            .AnyAsync(x => x.EventId == eventId && x.SectorId == sectorId, ct);
+            .AnyAsync(x => x.EventId == eventId && x.EventSectorId == sectorId, ct);
     }
 
 }

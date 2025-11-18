@@ -14,11 +14,15 @@ public class GetAllEventsHandler : IRequestHandler<GetAllEventsQuery, List<Event
     public async Task<List<EventResponse>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
     {
         var list = await _eventQuery.GetAllAsync(cancellationToken);
+
+        
         return list.Select(e => new EventResponse
         {
             EventId = e.EventId,
-            Name = e.Name,
+            VenueId = e.VenueId,
+            Name = e.Name,            
             Category = e.Category?.Name ?? "N/A",
+            CategoryType = e.CategoryType?.Name ?? "N/A",
             Status = e.Status?.Name ?? "N/A",
             Time = e.Time,
             Address = e.Address,

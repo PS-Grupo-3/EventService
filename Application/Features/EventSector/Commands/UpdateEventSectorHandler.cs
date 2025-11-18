@@ -27,9 +27,6 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
         if (request.Request.Price.HasValue)
             existing.Price = request.Request.Price.Value;
 
-        if (request.Request.Available.HasValue)
-            existing.Available = request.Request.Available.Value;
-
         if (request.Request.Capacity < 0)
             throw new ArgumentException("No se permite una capacidad menor a 0.");
 

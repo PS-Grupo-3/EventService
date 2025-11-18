@@ -21,6 +21,7 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
         return new EventDetailResponse
         {
             EventId = e.EventId,
+            VenueId = e.VenueId,            
             Name = e.Name,
             Description = e.Description,
             Address = e.Address,
@@ -34,7 +35,9 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
             Sectors = e.EventSectors 
                 .Select(s => new EventSectorResponse
                 {
-                    EventSectorId = s.EventSectorId,                    
+                    EventSectorId = s.EventSectorId,     
+                    EventId = s.EventId,
+                    SectorId = s.EventSectorId,
                     Capacity = s.Capacity,
                     Price = s.Price
                 }).ToList()

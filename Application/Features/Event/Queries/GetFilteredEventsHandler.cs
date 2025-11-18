@@ -21,12 +21,15 @@ public class GetFilteredEventsHandler : IRequestHandler<GetFilteredEventsQuery, 
         return list.Select(e => new EventResponse
         {
             EventId = e.EventId,
+            VenueId = e.VenueId,
             Name = e.Name,
             Category = e.Category?.Name ?? "N/A",
             CategoryType = e.CategoryType?.Name ?? "N/A",
             Status = e.Status?.Name ?? "N/A",
             Time = e.Time,
-            Address = e.Address
+            Address = e.Address,
+            BannerImageUrl = e.BannerImageUrl,
+            ThumbnailUrl = e.ThumbnailUrl
         }).ToList();
     }
 }

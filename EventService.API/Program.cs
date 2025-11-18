@@ -45,6 +45,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.services.AddHttpClient<IVenueClient, VenueHttpClient>(c =>
+{
+    c.BaseAddress = new Uri("http://localhost:5136");
+});
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var jwt = builder.Configuration.GetSection("Jwt");
@@ -58,7 +64,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"])),
         RoleClaimType = "userRole",
     };
-
 }); 
 
 var app = builder.Build();

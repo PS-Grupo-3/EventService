@@ -29,9 +29,7 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
         {
-            if (!IsAdmin)
-                return Forbid();
-
+            // Se eliminó el chequeo manual que causaba el error 403
             var result = await _mediator.Send(new CreateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
@@ -40,9 +38,6 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)
         {
-            if (!IsAdmin)
-                return Forbid();
-
             var result = await _mediator.Send(new UpdateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
@@ -51,20 +46,14 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> UpdateAvailability(Guid id, [FromBody] bool available)
         {
-            if (!IsAdmin)
-                return Forbid();
-
             var response = await _mediator.Send(new UpdateEventSectorAvailabilityCommand(id, available, CurrentUserId, CurrentUserRole));
             return Ok(response);
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Admin,SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin")] // Solo SuperAdmin puede borrar
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (!IsSuperAdmin)
-                return Forbid();
-
             var request = new DeleteEventSectorRequest { EventSectorId = id };
             var result = await _mediator.Send(new DeleteEventSectorCommand(request));
             return Ok(result);

@@ -29,7 +29,7 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
         {
-            // Se eliminó el chequeo manual que causaba el error 403
+            
             var result = await _mediator.Send(new CreateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }

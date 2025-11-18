@@ -11,6 +11,7 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
     private readonly IEventCategoryQuery _eventCategoryQuery;
     private readonly IEventStatusQuery _eventStatusQuery;
     private readonly ICategoryTypeQuery _categoryTypeQuery;
+    private readonly IVenueClient _venueClient;
 
     public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery)
     {

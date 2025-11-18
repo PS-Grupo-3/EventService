@@ -71,7 +71,9 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
             CategoryType = entity.CategoryType.Name,
             Status = entity.Status.Name,
             Time = entity.Time,
-            Address = entity.Address
+            Address = entity.Address,
+            BannerImageUrl = entity.BannerImageUrl,
+            ThumbnailUrl = entity.ThumbnailUrl
         };
     }
 }

@@ -26,4 +26,13 @@ public class EventSectorQuery : IEventSectorQuery
         return await _context.EventSectors
             .FirstOrDefaultAsync(es => es.VenueSectorId == eventSectorId, cancellationToken);
     }
+    
+    public async Task<EventSector?> GetByIdWithSeatsAsync(Guid eventSectorId, CancellationToken ct)
+    {
+        return await _context.EventSectors
+            .AsNoTracking()
+            .Include(s => s.Shape)
+            .Include(s => s.Seats)
+            .FirstOrDefaultAsync(s => s.EventSectorId == eventSectorId, ct);
+    }
 }

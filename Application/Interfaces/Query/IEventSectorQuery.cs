@@ -4,4 +4,5 @@ public interface IEventSectorQuery
 {
     Task<IEnumerable<EventSector>> GetByEventIdAsync(Guid eventId, CancellationToken cancellationToken = default);
     Task<EventSector?> GetByIdAsync(Guid eventSectorId, CancellationToken cancellationToken = default);
+    Task<EventSector?> GetByIdWithSeatsAsync(Guid eventSectorId, CancellationToken ct);
 }

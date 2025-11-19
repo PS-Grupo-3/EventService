@@ -106,7 +106,7 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
 
             foreach (var seat in sectorDetail.Seats)
             {
-                eventSector.Seats.Add(new EventSeat
+                eventSector.Seats.Add(new Domain.Entities.EventSeat
                 {
                     EventSeatId = Guid.NewGuid(),
                     EventId = entity.EventId,

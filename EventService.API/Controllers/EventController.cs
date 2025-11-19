@@ -1,5 +1,6 @@
 ﻿using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
+using Application.Features.EventSeat;
 using Application.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -84,5 +85,31 @@ namespace EventService.API.Controllers
             var result = await _mediator.Send(new DeleteEventCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
+        
+        // Adapter
+        [HttpGet("{id:guid}/full")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFull(Guid id)
+        {
+            var result = await _mediator.Send(new GetEventFullSnapshotQuery(id));
+            return Ok(result);
+        }
+
+        [HttpGet("{eventId:guid}/sectors/{sectorId:guid}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSector(Guid eventId, Guid sectorId)
+        {
+            var result = await _mediator.Send(new GetEventSectorByIdQuery(sectorId));
+            return Ok(result);
+        }
+
+        [HttpPatch("{eventId:guid}/seats/{seatId:guid}")]
+        [Authorize(Roles = "Current, Admin,SuperAdmin")]
+        public async Task<IActionResult> UpdateSeat(Guid eventId, Guid seatId, [FromBody] UpdateSeatStatusRequest req)
+        {
+            var result = await _mediator.Send(new UpdateSeatStatusCommand(seatId, req));
+            return Ok(result);
+        }
+
     }
 }

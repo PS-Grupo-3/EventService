@@ -24,6 +24,7 @@ namespace EventService.API.DependencyInjection
             services.AddScoped<IEventSectorQuery, EventSectorQuery>();
             services.AddScoped<IEventStatusQuery, EventStatusQuery>();
             services.AddScoped<ICategoryTypeQuery, CategoryTypeQuery>();
+            services.AddScoped<IEventSeatCommand, EventSeatCommand>();
 
             return services;
         }

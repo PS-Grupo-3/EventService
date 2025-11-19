@@ -25,15 +25,6 @@ namespace EventService.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> Create([FromBody] CreateEventSectorRequest request)
-        {
-            
-            var result = await _mediator.Send(new CreateEventSectorCommand(request, CurrentUserId, CurrentUserRole));
-            return Ok(result);
-        }
-
         [HttpPut]
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Update([FromBody] UpdateEventSectorRequest request)

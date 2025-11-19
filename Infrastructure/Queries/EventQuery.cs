@@ -25,6 +25,24 @@ public class EventQuery : IEventQuery
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<Event?> GetByIdWithDetailsAsync(Guid eventId, CancellationToken ct)
+    {
+        return await _context.Events
+            .AsNoTracking()
+            
+            .Include(e => e.Category)
+            .Include(e => e.CategoryType)
+            .Include(e => e.Status)
+            
+            .Include(e => e.EventSectors)
+            .ThenInclude(s => s.Shape)
+            
+            .Include(e => e.EventSectors)
+            .ThenInclude(s => s.Seats)
+
+            .FirstOrDefaultAsync(e => e.EventId == eventId, ct);
+    }
+
     public async Task<Event?> GetByIdAsync(Guid eventId, CancellationToken cancellationToken = default)
     {
         return await _context.Events

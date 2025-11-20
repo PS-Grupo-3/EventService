@@ -34,12 +34,14 @@ public class GetEventFullSnapshotHandler : IRequestHandler<GetEventFullSnapshotQ
             ThumbnailUrl = e.ThumbnailUrl,
             ThemeColor = e.ThemeColor,
             VenueBackgroundImageUrl = venue?.BackgroundImageUrl,
+            MapUrl = venue?.MapUrl,
             Sectors = e.EventSectors.Select(s => new EventSectorFullResponse
             {
                 EventSectorId = s.EventSectorId,
                 Name = s.Name,
                 IsControlled = s.IsControlled,
                 Capacity = s.Capacity,
+                Available = s.Available,
                 Shape = new EventSectorShapeResponse
                 {
                     Type = s.Shape.Type,

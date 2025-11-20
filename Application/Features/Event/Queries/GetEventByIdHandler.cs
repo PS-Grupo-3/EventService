@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Query;
+﻿using Application.Interfaces.Adapter;
+using Application.Interfaces.Query;
 using Application.Models.Responses;
 using MediatR;
 
@@ -6,9 +7,12 @@ namespace Application.Features.Event.Queries;
 public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetailResponse?>
 {
     private readonly IEventQuery _eventQuery;
-    public GetEventByIdHandler(IEventQuery eventQuery)
+    private readonly IVenueClient _venueClient;
+    
+    public GetEventByIdHandler(IEventQuery eventQuery, IVenueClient venueClient)
     {
         _eventQuery = eventQuery;
+        _venueClient = venueClient;
     }
 
     public async Task<EventDetailResponse?> Handle(GetEventByIdQuery request, CancellationToken ct)
@@ -17,7 +21,9 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
 
         if (e is null)
             throw new KeyNotFoundException($"No se encontró el evento con ID {request.EventId}");
-
+        
+        var venue = await _venueClient.GetVenue(e.VenueId.ToString());
+        
         return new EventDetailResponse
         {
             EventId = e.EventId,
@@ -30,6 +36,7 @@ public class GetEventByIdHandler : IRequestHandler<GetEventByIdQuery, EventDetai
             Type = e.CategoryType?.Name ?? "N/A",
             Status = e.Status?.Name ?? "N/A",
             BannerImageUrl = e.BannerImageUrl,
+            MapUrl = venue.MapUrl ?? "N/A",
             ThumbnailUrl = e.ThumbnailUrl,
             ThemeColor = e.ThemeColor,
             Sectors = e.EventSectors 

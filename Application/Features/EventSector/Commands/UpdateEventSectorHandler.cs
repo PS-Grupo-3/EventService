@@ -17,7 +17,7 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
 
     public async Task<GenericResponse> Handle(UpdateEventSectorCommand request, CancellationToken cancellationToken)
     {
-        var existing = await _eventSectorQuery.GetByIdAsync(request.Request.EventSectorId, cancellationToken);
+        var existing = await _eventSectorQuery.GetByIdWithSeatsAsync(request.Request.EventSectorId, cancellationToken);
         if (existing is null)
             throw new KeyNotFoundException($"No se encontró el EventSector con ID {request.Request.EventSectorId}");
 
@@ -27,6 +27,9 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
         if (request.Request.Price.HasValue)
             existing.Price = request.Request.Price.Value;
 
+        if (request.Request.Available.HasValue)
+            existing.Available = (bool)request.Request.Available;
+        
         foreach (var seat in existing.Seats)
         {
             seat.Price = existing.Price;

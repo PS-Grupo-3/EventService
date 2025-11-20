@@ -10,6 +10,7 @@ public class EventSector
     public bool IsControlled { get; set; }
     public int Capacity { get; set; }
     public decimal Price { get; set; }
+    public bool Available { get; set; }
 
     public EventSectorShape Shape { get; set; } = null!;
     public ICollection<EventSeat> Seats { get; set; } = new List<EventSeat>();

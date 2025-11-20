@@ -6,4 +6,5 @@ public class VenueSnapshotDto
     public string Name { get; set; }
     public List<SectorSnapshotDto> Sectors { get; set; }
     public string BackgroundImageUrl { get; set; }
+    public string MapUrl { get; set; }
 }

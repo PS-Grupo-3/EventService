@@ -24,7 +24,8 @@ public class GetSectorByIdHandler : IRequestHandler<GetSectorByIdQuery, EventSec
             EventId = entity.EventId,
             SectorId = entity.VenueSectorId,
             Capacity = entity.Capacity,
-            Price = entity.Price
+            Price = entity.Price,
+            Available = entity.Available
         };
     }
 }

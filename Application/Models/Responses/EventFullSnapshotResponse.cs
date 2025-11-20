@@ -9,6 +9,6 @@ public class EventFullSnapshotResponse
     public string ThumbnailUrl { get; set; }
     public string ThemeColor { get; set; }
     public string VenueBackgroundImageUrl { get; set; }
-
+    public string MapUrl { get; set; }
     public List<EventSectorFullResponse> Sectors { get; set; } = new();
 }

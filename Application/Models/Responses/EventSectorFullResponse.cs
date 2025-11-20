@@ -6,7 +6,7 @@ public class EventSectorFullResponse
     public string Name { get; set; }
     public bool IsControlled { get; set; }
     public int Capacity { get; set; }
-
+    public bool Available { get; set; }
     public EventSectorShapeResponse Shape { get; set; }
     public List<EventSeatResponse> Seats { get; set; } = new();
 }

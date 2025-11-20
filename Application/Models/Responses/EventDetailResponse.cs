@@ -14,5 +14,6 @@ public class EventDetailResponse
     public string BannerImageUrl { get; set; } = null!;
     public string ThumbnailUrl { get; set; } = null!;
     public string ThemeColor { get; set; } = null!;
+    public string MapUrl { get; set; } = null!;
     public List<EventSectorResponse> Sectors { get; set; } = new();
 }

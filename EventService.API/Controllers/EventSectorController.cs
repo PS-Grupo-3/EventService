@@ -42,7 +42,7 @@ namespace EventService.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "SuperAdmin")] // Solo SuperAdmin puede borrar
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var request = new DeleteEventSectorRequest { EventSectorId = id };

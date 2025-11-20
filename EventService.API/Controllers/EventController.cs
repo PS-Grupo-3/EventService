@@ -86,7 +86,7 @@ namespace EventService.API.Controllers
             return Ok(result);
         }
         
-        // Adapter
+        // Adapter / Prototype
         [HttpGet("{id:guid}/full")]
         [AllowAnonymous]
         public async Task<IActionResult> GetFull(Guid id)

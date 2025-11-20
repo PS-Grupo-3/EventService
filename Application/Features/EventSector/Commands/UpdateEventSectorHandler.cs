@@ -27,6 +27,11 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
         if (request.Request.Price.HasValue)
             existing.Price = request.Request.Price.Value;
 
+        foreach (var seat in existing.Seats)
+        {
+            seat.Price = existing.Price;
+        }
+
         if (request.Request.Capacity < 0)
             throw new ArgumentException("No se permite una capacidad menor a 0.");
 
@@ -34,6 +39,7 @@ public class UpdateEventSectorHandler : IRequestHandler<UpdateEventSectorCommand
             throw new ArgumentException("No se permite un precio menor a 0.");
 
         await _eventSectorCommand.UpdateAsync(existing, cancellationToken);
+        
 
         return new GenericResponse
         {

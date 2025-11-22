@@ -53,7 +53,7 @@ public class EventQuery : IEventQuery
             .FirstOrDefaultAsync(e => e.EventId == eventId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Event>> GetFilteredAsync(Guid? eventId, int? categoryId, int? statusId, DateTime? from, DateTime? to, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Event>> GetFilteredAsync(Guid? eventId, int? categoryId, int? statusId, DateTime? from, DateTime? to, string? name, CancellationToken cancellationToken)
     {
         var query = _context.Events
             .Include(e => e.Category)
@@ -61,6 +61,7 @@ public class EventQuery : IEventQuery
             .Include(e => e.Status)
             .Include(e => e.EventSectors)
             .AsQueryable();
+
 
         if (eventId.HasValue)
             query = query.Where(e => e.EventId == eventId.Value);
@@ -70,12 +71,20 @@ public class EventQuery : IEventQuery
 
         if (statusId.HasValue)
             query = query.Where(e => e.StatusId == statusId.Value);
-        
+
         if (from.HasValue)
             query = query.Where(e => e.Time >= from.Value);
 
         if (to.HasValue)
             query = query.Where(e => e.Time <= to.Value);
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var lowered = name.ToLower();
+            query = query.Where(e =>
+                EF.Functions.Like(e.Name.ToLower(), $"%{lowered}%")
+            );
+        }
 
         return await query.ToListAsync(cancellationToken);
     }

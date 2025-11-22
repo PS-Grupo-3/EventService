@@ -16,7 +16,7 @@ public class GetFilteredEventsHandler : IRequestHandler<GetFilteredEventsQuery, 
         if (request.From.HasValue && request.To.HasValue && request.From > request.To)
             throw new ArgumentException("From date must be earlier than To date.");
         
-        var list = await _eventQuery.GetFilteredAsync(null, request.CategoryId, request.StatusId, request.From, request.To, ct);
+        var list = await _eventQuery.GetFilteredAsync(null, request.CategoryId, request.StatusId, request.From, request.To, request.Name, ct);
 
         return list.Select(e => new EventResponse
         {

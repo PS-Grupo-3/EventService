@@ -2,4 +2,4 @@
 using MediatR;
 
 namespace Application.Features.Event.Queries;
-public record GetFilteredEventsQuery(int? CategoryId, int? StatusId, DateTime? From, DateTime? To) : IRequest<List<EventResponse>>;
+public record GetFilteredEventsQuery(int? CategoryId, int? StatusId, DateTime? From, DateTime? To, string? Name) : IRequest<List<EventResponse>>;

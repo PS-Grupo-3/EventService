@@ -104,7 +104,7 @@ namespace EventService.API.Controllers
         }
 
         [HttpPatch("{eventId:guid}/seats/{seatId:guid}")]
-        [Authorize(Roles = "Current, Admin,SuperAdmin")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateSeat(Guid eventId, Guid seatId, [FromBody] UpdateSeatStatusRequest req)
         {
             var result = await _mediator.Send(new UpdateSeatStatusCommand(seatId, req));

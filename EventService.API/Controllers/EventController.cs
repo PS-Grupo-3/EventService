@@ -56,9 +56,6 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> Update([FromBody] UpdateEventRequest request)
         {
-            if (!IsAdmin)
-                return Forbid();
-
             var result = await _mediator.Send(new UpdateEventCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
@@ -67,9 +64,6 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> UpdateStatus(Guid id, int statusId)
         {
-            if (!IsAdmin)
-                return Forbid();
-
             var response = await _mediator.Send(new UpdateEventStatusCommand(id, statusId, CurrentUserId, CurrentUserRole));
             return Ok(response);
         }
@@ -78,9 +72,6 @@ namespace EventService.API.Controllers
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (!IsSuperAdmin)
-                return Forbid();
-
             var request = new DeleteEventRequest { EventId = id };
             var result = await _mediator.Send(new DeleteEventCommand(request, CurrentUserId, CurrentUserRole));
             return Ok(result);

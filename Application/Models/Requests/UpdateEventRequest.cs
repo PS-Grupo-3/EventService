@@ -2,8 +2,6 @@
 
 public class UpdateEventRequest
 {
-    public Guid EventId { get; set; }
-    public int? StatusId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     public DateTime? Time { get; set; }

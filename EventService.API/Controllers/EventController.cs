@@ -1,6 +1,7 @@
 ﻿using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
 using Application.Features.EventSeat;
+using Application.Features.EventSector.Commands;
 using Application.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -109,6 +110,27 @@ namespace EventService.API.Controllers
             var result = await _mediator.Send(new UpdateSeatStatusCommand(seatId, req));
             return Ok(result);
         }
+        
+        [HttpPatch("{id}/reserve")]
+        public async Task<IActionResult> ReserveFree(Guid id)
+        {
+            var cmd = new ReserveFreeSectorCommand { EventSectorId = id };
+            var result = await _mediator.Send(cmd);
+
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPatch("{id}/release")]
+        public async Task<IActionResult> ReleaseFree(Guid id)
+        {
+            var cmd = new ReleaseFreeSectorCommand { EventSectorId = id };
+            var result = await _mediator.Send(cmd);
+
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
 
     }
 }

@@ -23,41 +23,45 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
     public async Task<GenericResponse> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
         var existing = await _eventQuery.GetByIdAsync(request.Request.EventId, cancellationToken);
-
         if (existing is null)
             throw new KeyNotFoundException($"No se encontró el evento con ID {request.Request.EventId}");
 
         if (existing.StatusId == 4)
-            throw new InvalidOperationException(
-                $"El evento con ID {request.Request.EventId} ya está finalizado y no puede modificarse.");
-        
+            throw new InvalidOperationException($"El evento con ID {existing.EventId} ya está finalizado.");
+
         if (request.Request.Name is not null)
             existing.Name = request.Request.Name;
+
         if (request.Request.Description is not null)
             existing.Description = request.Request.Description;
+
         if (request.Request.Time.HasValue)
+        {
+            if (request.Request.Time.Value < DateTime.UtcNow)
+                throw new ArgumentException("Ingrese una fecha válida");
             existing.Time = request.Request.Time.Value;
+        }
+
         if (request.Request.BannerImageUrl is not null)
             existing.BannerImageUrl = request.Request.BannerImageUrl;
+
         if (request.Request.ThumbnailUrl is not null)
             existing.ThumbnailUrl = request.Request.ThumbnailUrl;
+
         if (request.Request.ThemeColor is not null)
             existing.ThemeColor = request.Request.ThemeColor;
+
         if (request.Request.StatusId.HasValue)
             existing.StatusId = request.Request.StatusId.Value;
-        if (request.Request.Time < DateTime.UtcNow)
-            throw new ArgumentException("Ingrese una fecha válida");
 
         if (request.Request.CategoryId.HasValue)
         {
             var newCategoryId = request.Request.CategoryId.Value;
             var category = await _eventCategoryQuery.GetByIdAsync(newCategoryId, cancellationToken);
-            
             if (category == null)
                 throw new BadRequestException400($"La Categoría con ID {newCategoryId} no existe.");
 
             existing.CategoryId = newCategoryId;
-
 
             if (request.Request.TypeId.HasValue)
             {
@@ -66,9 +70,9 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
                 if (type == null)
                     throw new KeyNotFoundException($"El Tipo con ID {newTypeId} no existe.");
 
-                
                 if (type.EventCategoryId != newCategoryId)
-                    throw new KeyNotFoundException($"El Tipo '{type.Name}' no pertenece a la Categoría '{category.Name}'.");
+                    throw new BadRequestException400(
+                        $"El Tipo '{type.Name}' no pertenece a la categoría '{category.Name}'.");
 
                 existing.TypeId = newTypeId;
             }
@@ -77,16 +81,16 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
                 existing.TypeId = null;
             }
         }
-        else if (request.Request.TypeId.HasValue) 
+        else if (request.Request.TypeId.HasValue)
         {
             var newTypeId = request.Request.TypeId.Value;
             var type = await _categoryTypeQuery.GetByIdAsync(newTypeId, cancellationToken);
             if (type == null)
                 throw new BadRequestException400($"El Tipo con ID {newTypeId} no existe.");
 
-            // Validar que el nuevo Tipo pertenezca a la Categoría ACTUAL del evento
             if (type.EventCategoryId != existing.CategoryId)
-                throw new BadRequestException400($"El Tipo '{type.Name}' no pertenece a la categoría actual del evento ('{existing.Category.Name}').");
+                throw new BadRequestException400(
+                    $"El Tipo '{type.Name}' no pertenece a la categoría actual del evento ('{existing.Category.Name}').");
 
             existing.TypeId = newTypeId;
         }
@@ -102,3 +106,4 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
         };
     }
 }
+

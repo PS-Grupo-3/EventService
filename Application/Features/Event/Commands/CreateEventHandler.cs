@@ -6,6 +6,7 @@ using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Event.Commands;
+
 public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventResponse>
 {
     private readonly IEventCommand _eventCommand;
@@ -14,7 +15,8 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
     private readonly ICategoryTypeQuery _categoryTypeQuery;
     private readonly IVenueClient _venueClient;
 
-    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery, IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery, IVenueClient venueClient)
+    public CreateEventHandler(IEventCommand eventCommand, IEventCategoryQuery eventCategoryQuery,
+        IEventStatusQuery eventStatusQuery, ICategoryTypeQuery categoryTypeQuery, IVenueClient venueClient)
     {
         _eventCommand = eventCommand;
         _eventCategoryQuery = eventCategoryQuery;
@@ -29,22 +31,21 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
         var categoryType = await _categoryTypeQuery.GetByIdAsync(request.Request.TypeId, cancellationToken);
 
         if (category is null)
-            throw new KeyNotFoundException($"No existe una categoría con ID {request.Request.CategoryId}");
+            throw new KeyNotFoundException($"No existe categoría con ID {request.Request.CategoryId}");
         if (categoryType is null)
-            throw new KeyNotFoundException($"No existe un tipo de categoría con ID {request.Request.TypeId}");
-
+            throw new KeyNotFoundException($"No existe tipo con ID {request.Request.TypeId}");
         if (categoryType.EventCategoryId != category.CategoryId)
-            throw new KeyNotFoundException("El tipo de categoría no pertenece a la categoría elegida");
+            throw new KeyNotFoundException("El tipo no corresponde a la categoría");
 
         var status = await _eventStatusQuery.GetByIdAsync(request.Request.StatusId, cancellationToken);
         if (status is null)
-            throw new KeyNotFoundException($"No existe un estado con ID {request.Request.StatusId}");
+            throw new KeyNotFoundException($"No existe estado con ID {request.Request.StatusId}");
 
         if (request.UserRole == "Current")
-            throw new UnauthorizedAccessException("Los usuarios comunes no pueden crear eventos.");
+            throw new UnauthorizedAccessException("No autorizado.");
 
         if (request.Request.Time < DateTime.UtcNow)
-            throw new ArgumentException("Ingrese una fecha válida");
+            throw new ArgumentException("Fecha inválida");
 
         var entity = new Domain.Entities.Event
         {
@@ -63,17 +64,16 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
             ThumbnailUrl = request.Request.ThumbnailUrl,
             ThemeColor = request.Request.ThemeColor
         };
-        
-        // ADAPTER
+
         var venueSnapshot = await _venueClient.GetVenue(request.Request.VenueId.ToString());
         if (venueSnapshot == null)
             throw new KeyNotFoundException("Venue no encontrado");
-        
+
         foreach (var s in venueSnapshot.Sectors)
         {
             var sectorDetail = await _venueClient.GetSector(s.SectorId.ToString());
             if (sectorDetail == null)
-                throw new Exception($"Sector {s.SectorId} no encontrado en VenueService");
+                throw new Exception($"Sector {s.SectorId} no encontrado");
 
             var eventSector = new Domain.Entities.EventSector
             {
@@ -81,13 +81,10 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
                 EventId = entity.EventId,
                 VenueSectorId = s.SectorId,
                 Name = s.Name,
-                IsControlled = s.IsControlled,
-                Capacity = s.Capacity ?? s.SeatCount
+                IsControlled = s.IsControlled
             };
 
             var shape = sectorDetail.Shape;
-            if (shape == null)
-                throw new Exception($"El sector {s.SectorId} no tiene Shape definido");
 
             eventSector.Shape = new EventSectorShape
             {
@@ -104,6 +101,7 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
                 Colour = shape.Colour
             };
 
+            // Seats
             foreach (var seat in sectorDetail.Seats)
             {
                 eventSector.Seats.Add(new Domain.Entities.EventSeat
@@ -120,12 +118,19 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
                 });
             }
 
+            // Capacidad final
+            if (eventSector.IsControlled)
+            {
+                eventSector.Capacity = eventSector.Seats.Count;
+            }
+            else
+            {
+                eventSector.Capacity = s.Capacity ?? 0;
+            }
+
             entity.EventSectors.Add(eventSector);
         }
 
-        // ADAPTER
-        
-        
         await _eventCommand.InsertAsync(entity, cancellationToken);
 
         return new EventResponse

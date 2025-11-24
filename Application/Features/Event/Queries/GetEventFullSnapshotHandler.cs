@@ -42,6 +42,7 @@ public class GetEventFullSnapshotHandler : IRequestHandler<GetEventFullSnapshotQ
                 IsControlled = s.IsControlled,
                 Capacity = s.Capacity,
                 Available = s.Available,
+                Price = s.Price,
                 Shape = new EventSectorShapeResponse
                 {
                     Type = s.Shape.Type,

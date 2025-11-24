@@ -86,6 +86,14 @@ namespace EventService.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id:guid}/metrics")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMetrics(Guid id)
+        {
+            var result = await _mediator.Send(new GetEventMetricsQuery(id));
+            return Ok(result);
+        }
+
         [HttpGet("{eventId:guid}/sectors/{sectorId:guid}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSector(Guid eventId, Guid sectorId)

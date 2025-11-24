@@ -22,9 +22,9 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
 
     public async Task<GenericResponse> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
-        var existing = await _eventQuery.GetByIdAsync(request.Request.EventId, cancellationToken);
+        var existing = await _eventQuery.GetByIdAsync(request.EventId, cancellationToken);
         if (existing is null)
-            throw new KeyNotFoundException($"No se encontró el evento con ID {request.Request.EventId}");
+            throw new KeyNotFoundException($"No se encontró el evento con ID {request.EventId}");
 
         if (existing.StatusId == 4)
             throw new InvalidOperationException($"El evento con ID {existing.EventId} ya está finalizado.");
@@ -50,9 +50,6 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, GenericRes
 
         if (request.Request.ThemeColor is not null)
             existing.ThemeColor = request.Request.ThemeColor;
-
-        if (request.Request.StatusId.HasValue)
-            existing.StatusId = request.Request.StatusId.Value;
 
         if (request.Request.CategoryId.HasValue)
         {

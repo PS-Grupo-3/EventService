@@ -53,11 +53,11 @@ namespace EventService.API.Controllers
             return CreatedAtAction(nameof(Get), new { id = result.EventId }, result);
         }
 
-        [HttpPut]
+        [HttpPut("{id:guid}")]
         [Authorize(Roles = "Admin,SuperAdmin")]
-        public async Task<IActionResult> Update([FromBody] UpdateEventRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEventRequest request)
         {
-            var result = await _mediator.Send(new UpdateEventCommand(request, CurrentUserId, CurrentUserRole));
+            var result = await _mediator.Send(new UpdateEventCommand(id, request, CurrentUserId, CurrentUserRole));
             return Ok(result);
         }
 

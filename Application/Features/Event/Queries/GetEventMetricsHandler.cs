@@ -25,7 +25,6 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
 
         var venue = await _venueClient.GetVenue(e.VenueId.ToString());
 
-        // --- Métricas globales ---
         int totalSeats = e.EventSectors.Sum(s => s.Seats.Count);
         int soldSeats = e.EventSectors.Sum(s => s.Seats.Count(seat => !seat.Available));
         int availableSeats = totalSeats - soldSeats;
@@ -37,21 +36,21 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
             .Where(seat => !seat.Available)
             .Sum(seat => seat.Price));
 
-        // --- Métricas por sector ---
-        var sectorsMetrics = e.EventSectors.Select(s => new EventSectorMetricsResponse
-        {
-            SectorId = s.EventSectorId,
-            Name = s.Name,
-            TotalSeats = s.Seats.Count,
-            SoldSeats = s.Seats.Count(seat => !seat.Available),
-            AvailableSeats = s.Seats.Count(seat => seat.Available),
-            Renueve = s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price),
-            OccupancyRate = s.Seats.Count > 0
-                ? Math.Round((double)s.Seats.Count(seat => !seat.Available) / s.Seats.Count * 100, 2)
-                : 0
-        }).ToList();
+        var sectorsMetrics = e.EventSectors
+            .Where(s => s.Available)
+            .Select(s => new EventSectorMetricsResponse
+            {
+                SectorId = s.EventSectorId,
+                Name = s.Name,
+                TotalSeats = s.Seats.Count,
+                SoldSeats = s.Seats.Count(seat => !seat.Available),
+                AvailableSeats = s.Seats.Count(seat => seat.Available),
+                Renueve = s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price),
+                OccupancyRate = s.Seats.Count > 0
+                    ? Math.Round((double)s.Seats.Count(seat => !seat.Available) / s.Seats.Count * 100, 2)
+                    : 0
+            }).ToList();
 
-        // --- Construir la respuesta ---
         var response = new EventMetricsResponse
         {
             EventId = e.EventId,

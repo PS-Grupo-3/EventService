@@ -28,7 +28,11 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasData(
                 new EventCategory { CategoryId = 1, Name = "Music" },
                 new EventCategory { CategoryId = 2, Name = "Stand-up" },
-                new EventCategory { CategoryId = 3, Name = "Conference" }
+                new EventCategory { CategoryId = 3, Name = "Conference" },
+                new EventCategory { CategoryId = 4, Name = "Sports" },
+                new EventCategory { CategoryId = 5, Name = "Theatre" },
+                new EventCategory { CategoryId = 6, Name = "Arts" },
+                new EventCategory { CategoryId = 7, Name = "Workshops" }
             );
         }
     }

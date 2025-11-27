@@ -122,6 +122,174 @@ namespace Infrastructure.Migrations
                             TypeId = 13,
                             EventCategoryId = 3,
                             Name = "Education"
+                        },
+                        new
+                        {
+                            TypeId = 14,
+                            EventCategoryId = 4,
+                            Name = "Football"
+                        },
+                        new
+                        {
+                            TypeId = 15,
+                            EventCategoryId = 4,
+                            Name = "Basketball"
+                        },
+                        new
+                        {
+                            TypeId = 16,
+                            EventCategoryId = 4,
+                            Name = "Tennis"
+                        },
+                        new
+                        {
+                            TypeId = 17,
+                            EventCategoryId = 4,
+                            Name = "Rugby"
+                        },
+                        new
+                        {
+                            TypeId = 18,
+                            EventCategoryId = 4,
+                            Name = "MMA"
+                        },
+                        new
+                        {
+                            TypeId = 19,
+                            EventCategoryId = 4,
+                            Name = "Boxing"
+                        },
+                        new
+                        {
+                            TypeId = 20,
+                            EventCategoryId = 4,
+                            Name = "Hockey"
+                        },
+                        new
+                        {
+                            TypeId = 21,
+                            EventCategoryId = 4,
+                            Name = "Motorsport"
+                        },
+                        new
+                        {
+                            TypeId = 22,
+                            EventCategoryId = 4,
+                            Name = "Volleyball"
+                        },
+                        new
+                        {
+                            TypeId = 23,
+                            EventCategoryId = 4,
+                            Name = "Handball"
+                        },
+                        new
+                        {
+                            TypeId = 24,
+                            EventCategoryId = 4,
+                            Name = "Paddle"
+                        },
+                        new
+                        {
+                            TypeId = 25,
+                            EventCategoryId = 4,
+                            Name = "Swimming"
+                        },
+                        new
+                        {
+                            TypeId = 26,
+                            EventCategoryId = 4,
+                            Name = "Athletics"
+                        },
+                        new
+                        {
+                            TypeId = 27,
+                            EventCategoryId = 5,
+                            Name = "Musical"
+                        },
+                        new
+                        {
+                            TypeId = 28,
+                            EventCategoryId = 5,
+                            Name = "Drama"
+                        },
+                        new
+                        {
+                            TypeId = 29,
+                            EventCategoryId = 5,
+                            Name = "Classic Theatre"
+                        },
+                        new
+                        {
+                            TypeId = 30,
+                            EventCategoryId = 5,
+                            Name = "Children Theatre"
+                        },
+                        new
+                        {
+                            TypeId = 31,
+                            EventCategoryId = 5,
+                            Name = "Modern Theatre"
+                        },
+                        new
+                        {
+                            TypeId = 32,
+                            EventCategoryId = 5,
+                            Name = "Dance Theatre"
+                        },
+                        new
+                        {
+                            TypeId = 33,
+                            EventCategoryId = 6,
+                            Name = "Ballet"
+                        },
+                        new
+                        {
+                            TypeId = 34,
+                            EventCategoryId = 6,
+                            Name = "Contemporary Dance"
+                        },
+                        new
+                        {
+                            TypeId = 35,
+                            EventCategoryId = 6,
+                            Name = "Opera"
+                        },
+                        new
+                        {
+                            TypeId = 36,
+                            EventCategoryId = 6,
+                            Name = "Classical Music"
+                        },
+                        new
+                        {
+                            TypeId = 37,
+                            EventCategoryId = 6,
+                            Name = "Exhibitions"
+                        },
+                        new
+                        {
+                            TypeId = 38,
+                            EventCategoryId = 7,
+                            Name = "Tech"
+                        },
+                        new
+                        {
+                            TypeId = 39,
+                            EventCategoryId = 7,
+                            Name = "Cooking"
+                        },
+                        new
+                        {
+                            TypeId = 40,
+                            EventCategoryId = 7,
+                            Name = "Fitness"
+                        },
+                        new
+                        {
+                            TypeId = 41,
+                            EventCategoryId = 7,
+                            Name = "Art Workshop"
                         });
                 });
 
@@ -237,6 +405,26 @@ namespace Infrastructure.Migrations
                         {
                             CategoryId = 3,
                             Name = "Conference"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            Name = "Sports"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            Name = "Theatre"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            Name = "Arts"
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            Name = "Workshops"
                         });
                 });
 

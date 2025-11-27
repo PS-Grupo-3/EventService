@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class correccion : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -190,7 +190,11 @@ namespace Infrastructure.Migrations
                 {
                     { 1, "Music" },
                     { 2, "Stand-up" },
-                    { 3, "Conference" }
+                    { 3, "Conference" },
+                    { 4, "Sports" },
+                    { 5, "Theatre" },
+                    { 6, "Arts" },
+                    { 7, "Workshops" }
                 });
 
             migrationBuilder.InsertData(
@@ -221,7 +225,35 @@ namespace Infrastructure.Migrations
                     { 10, 2, "Satire" },
                     { 11, 3, "Technology" },
                     { 12, 3, "Business" },
-                    { 13, 3, "Education" }
+                    { 13, 3, "Education" },
+                    { 14, 4, "Football" },
+                    { 15, 4, "Basketball" },
+                    { 16, 4, "Tennis" },
+                    { 17, 4, "Rugby" },
+                    { 18, 4, "MMA" },
+                    { 19, 4, "Boxing" },
+                    { 20, 4, "Hockey" },
+                    { 21, 4, "Motorsport" },
+                    { 22, 4, "Volleyball" },
+                    { 23, 4, "Handball" },
+                    { 24, 4, "Paddle" },
+                    { 25, 4, "Swimming" },
+                    { 26, 4, "Athletics" },
+                    { 27, 5, "Musical" },
+                    { 28, 5, "Drama" },
+                    { 29, 5, "Classic Theatre" },
+                    { 30, 5, "Children Theatre" },
+                    { 31, 5, "Modern Theatre" },
+                    { 32, 5, "Dance Theatre" },
+                    { 33, 6, "Ballet" },
+                    { 34, 6, "Contemporary Dance" },
+                    { 35, 6, "Opera" },
+                    { 36, 6, "Classical Music" },
+                    { 37, 6, "Exhibitions" },
+                    { 38, 7, "Tech" },
+                    { 39, 7, "Cooking" },
+                    { 40, 7, "Fitness" },
+                    { 41, 7, "Art Workshop" }
                 });
 
             migrationBuilder.CreateIndex(

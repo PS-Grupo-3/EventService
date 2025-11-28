@@ -5,6 +5,7 @@ public class EventSectorFullResponse
     public Guid EventSectorId { get; set; }
     public string Name { get; set; }
     public bool IsControlled { get; set; }
+    public int OriginalCapacity { get; set; }
     public int Capacity { get; set; }
     public bool Available { get; set; }
     public decimal? Price { get; set; } 

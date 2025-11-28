@@ -8,6 +8,7 @@ public class EventSector
 
     public string Name { get; set; } = null!;
     public bool IsControlled { get; set; }
+    public int OriginalCapacity { get; set; }
     public int Capacity { get; set; }
     public decimal Price { get; set; }
     public bool Available { get; set; }

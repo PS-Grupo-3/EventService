@@ -26,6 +26,7 @@ public class GetEventSectorByIdHandler : IRequestHandler<GetEventSectorByIdQuery
             Name = s.Name,
             IsControlled = s.IsControlled,
             Capacity = s.Capacity,
+            OriginalCapacity = s.OriginalCapacity,
             Shape = new EventSectorShapeResponse
             {
                 Type = s.Shape.Type,

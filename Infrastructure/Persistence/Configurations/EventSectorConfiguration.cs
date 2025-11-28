@@ -19,6 +19,9 @@ public class EventSectorConfiguration : IEntityTypeConfiguration<EventSector>
         builder.Property(e => e.IsControlled)
             .IsRequired();
 
+        builder.Property(e => e.OriginalCapacity)
+            .IsRequired();
+
         builder.Property(e => e.Capacity)
             .IsRequired();
 

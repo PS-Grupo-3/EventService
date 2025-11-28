@@ -21,6 +21,7 @@ public class GetEventSectorsHandler : IRequestHandler<GetEventSectorsQuery, IEnu
             EventSectorId = s.EventSectorId,
             EventId = s.EventId,
             SectorId = s.VenueSectorId,
+            OriginalCapacity = s.OriginalCapacity,
             Capacity = s.Capacity,
             Price = s.Price
         }).ToList();

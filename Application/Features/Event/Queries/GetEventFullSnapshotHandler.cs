@@ -40,6 +40,7 @@ public class GetEventFullSnapshotHandler : IRequestHandler<GetEventFullSnapshotQ
                 EventSectorId = s.EventSectorId,
                 Name = s.Name,
                 IsControlled = s.IsControlled,
+                OriginalCapacity = s.OriginalCapacity,
                 Capacity = s.Capacity,
                 Available = s.Available,
                 Price = s.Price,

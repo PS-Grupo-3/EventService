@@ -495,6 +495,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<int>("OriginalCapacity")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(10, 2)

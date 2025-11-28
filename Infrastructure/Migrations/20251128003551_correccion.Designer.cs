@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251127170934_Init")]
-    partial class Init
+    [Migration("20251128003551_correccion")]
+    partial class correccion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -497,6 +497,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("OriginalCapacity")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .ValueGeneratedOnAdd()

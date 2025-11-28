@@ -25,33 +25,60 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
 
         var venue = await _venueClient.GetVenue(e.VenueId.ToString());
 
-        int totalSeats = e.EventSectors.Sum(s => s.Seats.Count);
-        int soldSeats = e.EventSectors.Sum(s => s.Seats.Count(seat => !seat.Available));
+        int totalSeats = e.EventSectors.Sum(s =>
+            s.IsControlled ? s.Seats.Count : s.OriginalCapacity
+        );
+
+        int soldSeats = e.EventSectors.Sum(s =>
+            s.IsControlled
+                ? s.Seats.Count(seat => !seat.Available)
+                : s.OriginalCapacity - s.Capacity
+        );
+
         int availableSeats = totalSeats - soldSeats;
+
         double occupancyRate = totalSeats > 0
             ? Math.Round((double)soldSeats / totalSeats * 100, 2)
             : 0;
 
-        decimal totalRevenue = e.EventSectors.Sum(s => s.Seats
-            .Where(seat => !seat.Available)
-            .Sum(seat => seat.Price));
+        decimal totalRevenue = e.EventSectors.Sum(s =>
+            s.IsControlled
+                ? s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price)
+                : (s.OriginalCapacity - s.Capacity) * (s.Price)
+        );
 
         var sectorsMetrics = e.EventSectors
             .Where(s => s.Available)
-            .Select(s => new EventSectorMetricsResponse
+            .Select(s =>
             {
-                SectorId = s.EventSectorId,
-                Name = s.Name,
-                TotalSeats = s.Seats.Count,
-                SoldSeats = s.Seats.Count(seat => !seat.Available),
-                AvailableSeats = s.Seats.Count(seat => seat.Available),
-                Renueve = s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price),
-                OccupancyRate = s.Seats.Count > 0
-                    ? Math.Round((double)s.Seats.Count(seat => !seat.Available) / s.Seats.Count * 100, 2)
-                    : 0
+                int sectorTotalSeats = s.IsControlled ? s.Seats.Count : s.OriginalCapacity;
+                int sectorSoldSeats = s.IsControlled
+                    ? s.Seats.Count(seat => !seat.Available)
+                    : s.OriginalCapacity - s.Capacity;
+
+                int sectorAvailableSeats = sectorTotalSeats - sectorSoldSeats;
+
+                double sectorOccupancyRate = sectorTotalSeats > 0
+                    ? Math.Round((double)sectorSoldSeats / sectorTotalSeats * 100, 2)
+                    : 0;
+
+                decimal sectorRevenue = s.IsControlled
+                    ? s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price)
+                    : sectorSoldSeats * (s.Price);
+
+                return new EventSectorMetricsResponse
+                {
+                    SectorId = s.EventSectorId,
+                    Name = s.Name,
+                    TotalSeats = sectorTotalSeats,
+                    SoldSeats = sectorSoldSeats,
+                    AvailableSeats = sectorAvailableSeats,
+                    OccupancyRate = sectorOccupancyRate,
+                    Renueve = sectorRevenue
+                };
             }).ToList();
 
-        var response = new EventMetricsResponse
+        return new EventMetricsResponse
         {
             EventId = e.EventId,
             VenueId = e.VenueId,
@@ -74,8 +101,7 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
             TotalRenueve = totalRevenue,
             Sectors = sectorsMetrics
         };
-
-        return response;
     }
+
 
 }

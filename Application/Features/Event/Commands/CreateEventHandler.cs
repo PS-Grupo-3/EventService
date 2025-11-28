@@ -122,10 +122,12 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
             if (eventSector.IsControlled)
             {
                 eventSector.Capacity = eventSector.Seats.Count;
+                eventSector.OriginalCapacity = eventSector.Seats.Count;
             }
             else
             {
                 eventSector.Capacity = s.Capacity ?? 0;
+                eventSector.OriginalCapacity = s.Capacity ?? 0;
             }
 
             entity.EventSectors.Add(eventSector);

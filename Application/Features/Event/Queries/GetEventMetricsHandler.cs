@@ -25,11 +25,13 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
 
         var venue = await _venueClient.GetVenue(e.VenueId.ToString());
 
-        int totalSeats = e.EventSectors.Sum(s =>
+        var availableSectors = e.EventSectors.Where(s => s.Available).ToList();
+
+        int totalSeats = availableSectors.Sum(s =>
             s.IsControlled ? s.Seats.Count : s.OriginalCapacity
         );
 
-        int soldSeats = e.EventSectors.Sum(s =>
+        int soldSeats = availableSectors.Sum(s =>
             s.IsControlled
                 ? s.Seats.Count(seat => !seat.Available)
                 : s.OriginalCapacity - s.Capacity
@@ -41,7 +43,7 @@ public class GetEventMetricsHandler : IRequestHandler<GetEventMetricsQuery, Even
             ? Math.Round((double)soldSeats / totalSeats * 100, 2)
             : 0;
 
-        decimal totalRevenue = e.EventSectors.Sum(s =>
+        decimal totalRevenue = availableSectors.Sum(s =>
             s.IsControlled
                 ? s.Seats.Where(seat => !seat.Available).Sum(seat => seat.Price)
                 : (s.OriginalCapacity - s.Capacity) * (s.Price)
